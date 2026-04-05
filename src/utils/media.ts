@@ -1,6 +1,6 @@
 import { getEntry } from 'astro:content';
 
-type MediaDiscriminant = 'blog' | 'events' | 'leaders' | 'others' | 'none';
+type MediaDiscriminant = 'blog' | 'events' | 'members' | 'others' | 'none';
 
 // Relaxed type to match Zod output more easily
 type MediaImageRef = 
@@ -12,12 +12,12 @@ type MediaImageRef =
 /**
  * Resolves a media reference to its file path.
  * @param imageRef The reference from the content collection (slug string or conditional object)
- * @param defaultCollection Optional default collection to search if imageRef is a simple slug (e.g. 'mediaLeaders')
+ * @param defaultCollection Optional default collection to search if imageRef is a simple slug (e.g. 'mediaMembers')
  * @returns The public URL path to the image, or undefined if not found.
  */
 export async function getMediaImage(
   imageRef: MediaImageRef, 
-  defaultCollection: 'mediaBlog' | 'mediaEvents' | 'mediaLeaders' | 'mediaOthers' = 'mediaBlog'
+  defaultCollection: 'mediaBlog' | 'mediaEvents' | 'mediaMembers' | 'mediaOthers' = 'mediaBlog'
 ): Promise<string | undefined> {
   if (!imageRef) return undefined;
 
@@ -26,7 +26,7 @@ export async function getMediaImage(
     return imageRef;
   }
 
-  let collection: 'mediaBlog' | 'mediaEvents' | 'mediaLeaders' | 'mediaOthers';
+  let collection: 'mediaBlog' | 'mediaEvents' | 'mediaMembers' | 'mediaOthers';
   let slug: string;
 
   // Case 2: Conditional field object { discriminant, value }
@@ -36,7 +36,7 @@ export async function getMediaImage(
     switch (imageRef.discriminant) {
       case 'blog': collection = 'mediaBlog'; break;
       case 'events': collection = 'mediaEvents'; break;
-      case 'leaders': collection = 'mediaLeaders'; break;
+      case 'members': collection = 'mediaMembers'; break;
       case 'others': collection = 'mediaOthers'; break;
       default: return undefined;
     }
@@ -74,7 +74,7 @@ export async function getMediaImage(
 /**
  * Helper to get alt text from a media entry
  */
-export async function getMediaAlt(imageRef: MediaImageRef, defaultCollection: 'mediaBlog' | 'mediaEvents' | 'mediaLeaders' | 'mediaOthers' = 'mediaBlog'): Promise<string | undefined> {
+export async function getMediaAlt(imageRef: MediaImageRef, defaultCollection: 'mediaBlog' | 'mediaEvents' | 'mediaMembers' | 'mediaOthers' = 'mediaBlog'): Promise<string | undefined> {
   if (!imageRef) return undefined;
   if (typeof imageRef === 'string' && imageRef.startsWith('/')) return undefined;
 
@@ -87,7 +87,7 @@ export async function getMediaAlt(imageRef: MediaImageRef, defaultCollection: 'm
      switch (imageRef.discriminant) {
       case 'blog': collection = 'mediaBlog'; break;
       case 'events': collection = 'mediaEvents'; break;
-      case 'leaders': collection = 'mediaLeaders'; break;
+      case 'members': collection = 'mediaMembers'; break;
       case 'others': collection = 'mediaOthers'; break;
       default: return undefined;
     }

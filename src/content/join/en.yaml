@@ -18,9 +18,9 @@ joinSteps:
     icon: 🚀
 followTitle: Documentation
 visualTagline: Built for speed and flexibility.
-leaderTitle: Customization
-leaderBadge: Developer Guide
-leaderContent: >-
+memberTitle: Customization
+memberBadge: Developer Guide
+memberContent: >-
   This template is designed to be easily modifiable. You can edit the Tailwind configuration, swap out Astro components, and define new Keystatic collections in the config file.
 requirementsTitle: Prerequisites
 requirementsList:

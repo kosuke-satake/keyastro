@@ -18,9 +18,9 @@ joinSteps:
     icon: 🚀
 followTitle: ドキュメント
 visualTagline: 速度と柔軟性のために構築。
-leaderTitle: カスタマイズ
-leaderBadge: 開発者ガイド
-leaderContent: >-
+memberTitle: カスタマイズ
+memberBadge: 開発者ガイド
+memberContent: >-
   このテンプレートは簡単に変更できるように設計されています。Tailwindの設定を編集したり、Astroコンポーネントを交換したり、設定ファイルで新しいKeystaticコレクションを定義したりできます。
 requirementsTitle: 前提条件
 requirementsList:

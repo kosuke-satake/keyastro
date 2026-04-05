@@ -130,7 +130,7 @@ const steps = t.joinSteps && t.joinSteps.length > 0 ? t.joinSteps : [
       </section>
     </ScrollReveal>
 
-    {/* Leader Recruitment */}
+    {/* Member Recruitment */}
     <ScrollReveal width="100%" client:visible className="mt-32">
       <section class="relative bg-white dark:bg-gray-900 p-8 md:p-16 rounded-3xl overflow-hidden shadow-2xl border border-gray-100 dark:border-gray-800">
         {/* Abstract shapes */}
@@ -141,12 +141,12 @@ const steps = t.joinSteps && t.joinSteps.length > 0 ? t.joinSteps : [
           <div>
             <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 text-primary font-bold text-xs uppercase tracking-wider mb-6 border border-primary/20">
               <span class="w-2 h-2 rounded-full bg-primary animate-pulse"></span>
-              {t.leaderBadge || "Staff Recruitment"}
+              {t.memberBadge || "Staff Recruitment"}
             </div>
             
-            <h2 class="text-3xl md:text-5xl font-bold mb-6 text-gray-900 dark:text-white">{t.leaderTitle}</h2>
+            <h2 class="text-3xl md:text-5xl font-bold mb-6 text-gray-900 dark:text-white">{t.memberTitle}</h2>
             <p class="text-gray-600 dark:text-gray-300 text-lg leading-relaxed mb-8">
-              {t.leaderContent}
+              {t.memberContent}
             </p>
             
             <div class="flex flex-col sm:flex-row gap-4">

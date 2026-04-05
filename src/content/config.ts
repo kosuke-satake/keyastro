@@ -9,7 +9,7 @@ const dateSchema = z.string().or(z.date())
 const libraryImageSchema = z.discriminatedUnion('discriminant', [
   z.object({ discriminant: z.literal('blog'), value: z.string() }),
   z.object({ discriminant: z.literal('events'), value: z.string() }),
-  z.object({ discriminant: z.literal('leaders'), value: z.string() }),
+  z.object({ discriminant: z.literal('members'), value: z.string() }),
   z.object({ discriminant: z.literal('others'), value: z.string() }),
   z.object({ discriminant: z.literal('none'), value: z.unknown().optional() }),
 ]).optional().nullable();
@@ -65,8 +65,8 @@ const mediaSchema = z.object({
 const postsEN = defineCollection({ type: 'content', schema: postSchema });
 const postsJA = defineCollection({ type: 'content', schema: postSchema });
 
-const leadersEN = defineCollection({ type: 'content', schema: leaderSchema });
-const leadersJA = defineCollection({ type: 'content', schema: leaderSchema });
+const membersEN = defineCollection({ type: 'content', schema: leaderSchema });
+const membersJA = defineCollection({ type: 'content', schema: leaderSchema });
 
 const eventsEN = defineCollection({ type: 'content', schema: eventSchema });
 const eventsJA = defineCollection({ type: 'content', schema: eventSchema });
@@ -76,7 +76,7 @@ const newsJA = defineCollection({ type: 'content', schema: newsSchema });
 
 const mediaBlog = defineCollection({ type: 'data', schema: mediaSchema });
 const mediaEvents = defineCollection({ type: 'data', schema: mediaSchema });
-const mediaLeaders = defineCollection({ type: 'data', schema: mediaSchema });
+const mediaMembers = defineCollection({ type: 'data', schema: mediaSchema });
 const mediaOthers = defineCollection({ type: 'data', schema: mediaSchema });
 
 // Singletons (Data type)
@@ -150,9 +150,9 @@ const join = defineCollection({
     })).optional().default([]),
     followTitle: z.string().optional(),
     visualTagline: z.string().optional(),
-    leaderTitle: z.string(),
-    leaderBadge: z.string().optional(),
-    leaderContent: z.string(),
+    memberTitle: z.string(),
+    memberBadge: z.string().optional(),
+    memberContent: z.string(),
     requirementsTitle: z.string(),
     requirementsList: z.array(z.string()),
     applyButtonText: z.string(),
@@ -188,7 +188,7 @@ const global = defineCollection({
     footerRightsText: z.string(),
     navHome: z.string(),
     navAbout: z.string(),
-    navLeaders: z.string(),
+    navMembers: z.string(),
     navBlog: z.string(),
     navEvents: z.string(),
     navJoin: z.string(),
@@ -224,10 +224,10 @@ const privacy = defineCollection({
 
 export const collections = { 
   postsEN, postsJA, 
-  leadersEN, leadersJA, 
+  membersEN, membersJA, 
   eventsEN, eventsJA, 
   newsEN, newsJA,
-  mediaBlog, mediaEvents, mediaLeaders, mediaOthers, 
+  mediaBlog, mediaEvents, mediaMembers, mediaOthers, 
   homepage, about, eventsPage, join, global,
   contact, privacy
 };

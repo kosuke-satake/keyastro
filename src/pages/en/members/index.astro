@@ -1,0 +1,78 @@
+---
+import Layout from '../../../layouts/Layout.astro';
+import MemberGrid from '../../../components/sections/MemberGrid';
+import { getCollection } from 'astro:content';
+import Markdoc from '@markdoc/markdoc';
+import { headingNode, tableTag } from '../../../utils/markdocConfig';
+import { getMediaImage } from '../../../utils/media';
+
+export const prerender = true;
+
+const leadersRaw = await getCollection('membersEN');
+
+const members = await Promise.all(leadersRaw.map(async member => {
+  // Parse Bio from Body
+  const ast = Markdoc.parse(member.body);
+  const content = Markdoc.transform(ast, {
+    nodes: { heading: headingNode },
+    tags: { table: tableTag }
+  });
+  const bioHtml = Markdoc.renderers.html(content);
+
+  return {
+    slug: member.slug, 
+    data: {
+      avatar: await getMediaImage(member.data.avatar, 'mediaMembers'),
+      linkedin: member.data.linkedin,
+      instagram: member.data.instagram,
+      facebook: member.data.facebook,
+      website: member.data.website,
+      github: member.data.github,
+      twitter: member.data.twitter,
+      name: member.data.name,
+      role: member.data.role,
+      category: member.data.category,
+      joinedDate: member.data.joinedDate,
+      leftDate: member.data.leftDate,
+      bioHtml: bioHtml,
+      tenure: `${member.data.joinedDate.toLocaleDateString('en-US', { month: 'long', year: 'numeric' })} - ${member.data.leftDate ? member.data.leftDate.toLocaleDateString('en-US', { month: 'long', year: 'numeric' }) : 'Present'}`
+    }
+  };
+}));
+
+const activeMembers = members.filter(l => l.data.category === 'active')
+  .sort((a, b) => a.data.joinedDate.valueOf() - b.data.joinedDate.valueOf());
+
+const advisors = members.filter(l => l.data.category === 'advisor');
+
+const titles = {
+  active: "Members",
+  alumni: "Alumni",
+  advisor: "Advisors & VIPs"
+};
+---
+
+<Layout title="Our Members">
+  <div class="bg-gray-50 dark:bg-gray-900 pt-40 pb-24 transition-colors duration-300">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+      <h1 class="text-4xl font-extrabold text-gray-900 dark:text-white sm:text-5xl">Meet the Team</h1>
+      <p class="mt-4 text-xl text-gray-500 dark:text-gray-400">The students and mentors behind KeyAstro.</p>
+    </div>
+  </div>
+
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+    <MemberGrid 
+      client:visible 
+      activeMembers={activeMembers} 
+      alumni={[]} 
+      advisors={advisors} 
+      titles={titles}
+    />
+
+    <div class="mt-24 text-center">
+      <a href="/en/members/alumni" class="inline-flex items-center justify-center px-8 py-3 border border-transparent text-base font-medium rounded-full text-primary bg-blue-50 dark:bg-blue-900/20 hover:bg-blue-100 dark:hover:bg-blue-900/40 transition-colors">
+        View Alumni →
+      </a>
+    </div>
+  </div>
+</Layout>

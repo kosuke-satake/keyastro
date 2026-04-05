@@ -66,10 +66,10 @@ const relatedPosts = await Promise.all(relatedPostsRaw.map(async p => ({
     summary: p.data.summary
 })));
 
-// Get Leader for Author Link
-const leaders = await getCollection('leadersEN');
-const authorProfile = leaders.find(l => l.data.name === post.data.author);
-const authorAvatarSrc = authorProfile ? await getMediaImage(authorProfile.data.avatar, 'mediaLeaders') : undefined;
+// Get Member for Author Link
+const members = await getCollection('membersEN');
+const authorProfile = members.find(l => l.data.name === post.data.author);
+const authorAvatarSrc = authorProfile ? await getMediaImage(authorProfile.data.avatar, 'mediaMembers') : undefined;
 ---
 
 <Layout 
@@ -163,7 +163,7 @@ const authorAvatarSrc = authorProfile ? await getMediaImage(authorProfile.data.a
           {post.data.author && (
             <div class="mt-16 p-8 bg-gray-50 dark:bg-gray-800 rounded-2xl flex items-center gap-6 border border-gray-100 dark:border-gray-700">
               {authorProfile ? (
-                 <a href={`/en/leaders`} class="shrink-0 group">
+                 <a href={`/en/members`} class="shrink-0 group">
                    <div class="w-16 h-16 rounded-full overflow-hidden border-2 border-transparent group-hover:border-primary transition-colors">
                      {authorAvatarSrc ? (
                        <img src={authorAvatarSrc} alt={post.data.author} class="w-full h-full object-cover !m-0 !shadow-none" />
@@ -183,7 +183,7 @@ const authorAvatarSrc = authorProfile ? await getMediaImage(authorProfile.data.a
               <div>
                 <p class="text-sm text-gray-500 dark:text-gray-400 uppercase tracking-wider font-bold mb-1">Written by</p>
                 {authorProfile ? (
-                  <a href={`/en/leaders`} class="text-xl font-bold text-gray-900 dark:text-white hover:text-primary transition-colors">
+                  <a href={`/en/members`} class="text-xl font-bold text-gray-900 dark:text-white hover:text-primary transition-colors">
                     {post.data.author}
                   </a>
                 ) : (

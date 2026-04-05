@@ -1,6 +1,6 @@
 ---
 import Layout from '../../../layouts/Layout.astro';
-import LeaderGrid from '../../../components/sections/LeaderGrid';
+import MemberGrid from '../../../components/sections/MemberGrid';
 import { getCollection } from 'astro:content';
 import Markdoc from '@markdoc/markdoc';
 import { headingNode, tableTag } from '../../../utils/markdocConfig';
@@ -8,11 +8,11 @@ import { getMediaImage } from '../../../utils/media';
 
 export const prerender = true;
 
-const leadersRaw = await getCollection('leadersJA');
+const leadersRaw = await getCollection('membersJA');
 
-const leaders = await Promise.all(leadersRaw.map(async leader => {
+const members = await Promise.all(leadersRaw.map(async member => {
   // Parse Bio from Body
-  const ast = Markdoc.parse(leader.body);
+  const ast = Markdoc.parse(member.body);
   const content = Markdoc.transform(ast, {
     nodes: { heading: headingNode },
     tags: { table: tableTag }
@@ -20,30 +20,30 @@ const leaders = await Promise.all(leadersRaw.map(async leader => {
   const bioHtml = Markdoc.renderers.html(content);
 
   return {
-    slug: leader.slug, 
+    slug: member.slug, 
     data: {
-      avatar: await getMediaImage(leader.data.avatar, 'mediaLeaders'),
-      linkedin: leader.data.linkedin,
-      instagram: leader.data.instagram,
-      facebook: leader.data.facebook,
-      website: leader.data.website,
-      github: leader.data.github,
-      twitter: leader.data.twitter,
-      name: leader.data.name,
-      role: leader.data.role,
-      category: leader.data.category,
-      joinedDate: leader.data.joinedDate,
-      leftDate: leader.data.leftDate,
+      avatar: await getMediaImage(member.data.avatar, 'mediaMembers'),
+      linkedin: member.data.linkedin,
+      instagram: member.data.instagram,
+      facebook: member.data.facebook,
+      website: member.data.website,
+      github: member.data.github,
+      twitter: member.data.twitter,
+      name: member.data.name,
+      role: member.data.role,
+      category: member.data.category,
+      joinedDate: member.data.joinedDate,
+      leftDate: member.data.leftDate,
       bioHtml: bioHtml,
-      tenure: `${leader.data.joinedDate.toLocaleDateString('ja-JP', { year: 'numeric', month: 'long' })} - ${leader.data.leftDate ? leader.data.leftDate.toLocaleDateString('ja-JP', { year: 'numeric', month: 'long' }) : '現在'}`
+      tenure: `${member.data.joinedDate.toLocaleDateString('ja-JP', { year: 'numeric', month: 'long' })} - ${member.data.leftDate ? member.data.leftDate.toLocaleDateString('ja-JP', { year: 'numeric', month: 'long' }) : '現在'}`
     }
   };
 }));
 
-const activeMembers = leaders.filter(l => l.data.category === 'active')
+const activeMembers = members.filter(l => l.data.category === 'active')
   .sort((a, b) => a.data.joinedDate.valueOf() - b.data.joinedDate.valueOf());
 
-const advisors = leaders.filter(l => l.data.category === 'advisor');
+const advisors = members.filter(l => l.data.category === 'advisor');
 
 const titles = {
   active: "リーダー",
@@ -61,7 +61,7 @@ const titles = {
   </div>
 
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-    <LeaderGrid 
+    <MemberGrid 
       client:visible 
       activeMembers={activeMembers} 
       alumni={[]} 
@@ -70,7 +70,7 @@ const titles = {
     />
 
     <div class="mt-24 text-center">
-      <a href="/ja/leaders/alumni" class="inline-flex items-center justify-center px-8 py-3 border border-transparent text-base font-medium rounded-full text-primary bg-blue-50 dark:bg-blue-900/20 hover:bg-blue-100 dark:hover:bg-blue-900/40 transition-colors">
+      <a href="/ja/members/alumni" class="inline-flex items-center justify-center px-8 py-3 border border-transparent text-base font-medium rounded-full text-primary bg-blue-50 dark:bg-blue-900/20 hover:bg-blue-100 dark:hover:bg-blue-900/40 transition-colors">
         卒業生を見る →
       </a>
     </div>

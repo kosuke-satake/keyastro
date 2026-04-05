@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { SocialIcon } from '../ui/Icons';
 
-interface Leader {
+interface Member {
   slug: string;
   data: {
     avatar?: string | null;
@@ -22,10 +22,10 @@ interface Leader {
   };
 }
 
-interface LeaderGridProps {
-  activeMembers: Leader[];
-  alumni: Leader[];
-  advisors: Leader[];
+interface MemberGridProps {
+  activeMembers: Member[];
+  alumni: Member[];
+  advisors: Member[];
   titles: {
     active: string;
     alumni: string;
@@ -33,8 +33,8 @@ interface LeaderGridProps {
   };
 }
 
-export default function LeaderGrid({ activeMembers, alumni, advisors, titles }: LeaderGridProps) {
-  const [selectedLeader, setSelectedLeader] = useState<Leader | null>(null);
+export default function MemberGrid({ activeMembers, alumni, advisors, titles }: MemberGridProps) {
+  const [selectedLeader, setSelectedLeader] = useState<Member | null>(null);
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -46,32 +46,32 @@ export default function LeaderGrid({ activeMembers, alumni, advisors, titles }: 
     return () => document.removeEventListener('keydown', handleKeyDown);
   }, [selectedLeader]);
 
-  const LeaderCard = ({ leader }: { leader: Leader }) => (
+  const MemberCard = ({ member }: { member: Member }) => (
     <div 
-      onClick={() => setSelectedLeader(leader)}
+      onClick={() => setSelectedLeader(member)}
       role="button"
       tabIndex={0}
       onKeyDown={(e) => {
         if (e.key === 'Enter' || e.key === ' ') {
           e.preventDefault();
-          setSelectedLeader(leader);
+          setSelectedLeader(member);
         }
       }}
       className="space-y-4 text-center group cursor-pointer w-full max-w-sm focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 rounded-2xl p-4 transition-colors hover:bg-gray-50 dark:hover:bg-gray-800/50"
     >
       <div className="relative w-32 h-32 sm:w-48 sm:h-48 mx-auto rounded-full overflow-hidden border-4 border-white dark:border-gray-800 shadow-lg group-hover:scale-105 transition-transform">
-        {leader.data.avatar ? (
-          <img className="object-cover w-full h-full" src={leader.data.avatar} alt={leader.data.name} />
+        {member.data.avatar ? (
+          <img className="object-cover w-full h-full" src={member.data.avatar} alt={member.data.name} />
         ) : (
           <div className="w-full h-full bg-gray-200 dark:bg-gray-700 flex items-center justify-center text-gray-400 dark:text-gray-500 text-5xl font-bold">
-            {leader.data.name.charAt(0)}
+            {member.data.name.charAt(0)}
           </div>
         )}
       </div>
       <div className="space-y-1">
-        <h3 className="text-xl font-bold text-gray-900 dark:text-white group-hover:text-primary transition-colors">{leader.data.name}</h3>
-        <p className="text-primary font-medium text-base">{leader.data.role}</p>
-        <p className="text-sm text-gray-500 dark:text-gray-400 font-mono">{leader.data.tenure}</p>
+        <h3 className="text-xl font-bold text-gray-900 dark:text-white group-hover:text-primary transition-colors">{member.data.name}</h3>
+        <p className="text-primary font-medium text-base">{member.data.role}</p>
+        <p className="text-sm text-gray-500 dark:text-gray-400 font-mono">{member.data.tenure}</p>
       </div>
     </div>
   );
@@ -83,8 +83,8 @@ export default function LeaderGrid({ activeMembers, alumni, advisors, titles }: 
         <section>
           <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-12 text-center">{titles.active}</h2>
           <div className="grid gap-y-12 gap-x-4 sm:gap-x-8 grid-cols-2 md:grid-cols-3 lg:grid-cols-4 justify-items-center">
-            {activeMembers.map((leader) => (
-              <LeaderCard key={leader.slug} leader={leader} />
+            {activeMembers.map((member) => (
+              <MemberCard key={member.slug} member={member} />
             ))}
           </div>
         </section>
@@ -95,8 +95,8 @@ export default function LeaderGrid({ activeMembers, alumni, advisors, titles }: 
         <section>
           <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-12 text-center border-t border-gray-200 dark:border-gray-800 pt-16">{titles.advisor}</h2>
           <div className="grid gap-y-12 gap-x-4 sm:gap-x-8 grid-cols-2 md:grid-cols-3 justify-items-center">
-            {advisors.map((leader) => (
-              <LeaderCard key={leader.slug} leader={leader} />
+            {advisors.map((member) => (
+              <MemberCard key={member.slug} member={member} />
             ))}
           </div>
         </section>
@@ -107,8 +107,8 @@ export default function LeaderGrid({ activeMembers, alumni, advisors, titles }: 
         <section>
           <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-12 text-center border-t border-gray-200 dark:border-gray-800 pt-16">{titles.alumni}</h2>
           <div className="grid gap-y-10 gap-x-4 sm:gap-x-8 grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 justify-items-center">
-            {alumni.map((leader) => (
-              <LeaderCard key={leader.slug} leader={leader} />
+            {alumni.map((member) => (
+              <MemberCard key={member.slug} member={member} />
             ))}
           </div>
         </section>
@@ -132,7 +132,7 @@ export default function LeaderGrid({ activeMembers, alumni, advisors, titles }: 
               className="relative w-full max-w-2xl bg-white dark:bg-gray-900 rounded-3xl shadow-2xl overflow-hidden max-h-[90vh] overflow-y-auto"
               role="dialog"
               aria-modal="true"
-              aria-labelledby="modal-leader-name"
+              aria-labelledby="modal-member-name"
             >
               <button 
                 onClick={() => setSelectedLeader(null)}
@@ -153,7 +153,7 @@ export default function LeaderGrid({ activeMembers, alumni, advisors, titles }: 
                   )}
                 </div>
                 
-                <h3 id="modal-leader-name" className="text-4xl font-bold text-gray-900 dark:text-white mb-2 text-center">{selectedLeader.data.name}</h3>
+                <h3 id="modal-member-name" className="text-4xl font-bold text-gray-900 dark:text-white mb-2 text-center">{selectedLeader.data.name}</h3>
                 <p className="text-primary font-medium text-xl mb-4 text-center">{selectedLeader.data.role}</p>
                 <span className="text-sm font-mono bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300 px-3 py-1 rounded-full mb-8">
                   {selectedLeader.data.tenure}

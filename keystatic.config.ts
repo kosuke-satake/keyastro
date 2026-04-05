@@ -31,11 +31,11 @@ const markdocComponents = {
     },
   }),
   leaderImage: block({
-    label: 'Leader Library Image',
+    label: 'Member Library Image',
     schema: {
       image: fields.relationship({
         label: 'Select Image',
-        collection: 'mediaLeaders',
+        collection: 'mediaMembers',
         validation: { isRequired: true },
       }),
       alt: fields.text({ label: 'Alt Text (Optional)' }),
@@ -86,7 +86,7 @@ const createLibraryImageField = (label: string) => fields.conditional(
       { label: 'None', value: 'none' },
       { label: 'Blog Library', value: 'blog' },
       { label: 'Event Library', value: 'events' },
-      { label: 'Leader Library', value: 'leaders' },
+      { label: 'Member Library', value: 'members' },
       { label: 'Other Library', value: 'others' },
     ],
     defaultValue: 'none',
@@ -95,7 +95,7 @@ const createLibraryImageField = (label: string) => fields.conditional(
     none: fields.empty(),
     blog: fields.relationship({ label: 'Image', collection: 'mediaBlog', validation: { isRequired: true } }),
     events: fields.relationship({ label: 'Image', collection: 'mediaEvents', validation: { isRequired: true } }),
-    leaders: fields.relationship({ label: 'Image', collection: 'mediaLeaders', validation: { isRequired: true } }),
+    members: fields.relationship({ label: 'Image', collection: 'mediaMembers', validation: { isRequired: true } }),
     others: fields.relationship({ label: 'Image', collection: 'mediaOthers', validation: { isRequired: true } }),
   }
 );
@@ -158,7 +158,7 @@ const globalSchema = {
   // Navigation Labels
   navHome: fields.text({ label: 'Menu: Home', validation: { isRequired: true } }),
   navAbout: fields.text({ label: 'Menu: About', validation: { isRequired: true } }),
-  navLeaders: fields.text({ label: 'Menu: Leaders', validation: { isRequired: true } }),
+  navMembers: fields.text({ label: 'Menu: Members', validation: { isRequired: true } }),
   navBlog: fields.text({ label: 'Menu: Blog', validation: { isRequired: true } }),
   navEvents: fields.text({ label: 'Menu: Events', validation: { isRequired: true } }),
   navJoin: fields.text({ label: 'Menu: Join', validation: { isRequired: true } }),
@@ -229,10 +229,10 @@ const joinSchema = {
   // Visual Circle Text
   visualTagline: fields.text({ label: 'Visual Circle Text (e.g. No Fees. Just Friends.)', multiline: true }),
 
-  // Leader Section
-  leaderTitle: fields.text({ label: 'Leader Recruitment Title' }),
-  leaderBadge: fields.text({ label: 'Recruitment Badge (e.g. Staff Recruitment)' }),
-  leaderContent: fields.text({ label: 'Leader Recruitment Text', multiline: true }),
+  // Member Section
+  memberTitle: fields.text({ label: 'Member Recruitment Title' }),
+  memberBadge: fields.text({ label: 'Recruitment Badge (e.g. Staff Recruitment)' }),
+  memberContent: fields.text({ label: 'Member Recruitment Text', multiline: true }),
   requirementsTitle: fields.text({ label: 'Requirements Title' }),
   requirementsList: fields.array(fields.text({ label: 'Requirement Item' }), { label: 'Requirements List', itemLabel: props => props.value }),
   applyButtonText: fields.text({ label: 'Apply Button Label' }),
@@ -342,10 +342,10 @@ export default config({
   ui: {
     brand: { name: 'KeyAstro Admin' },
     navigation: {
-      'Library': ['mediaBlog', 'mediaEvents', 'mediaLeaders', 'mediaOthers'],
+      'Library': ['mediaBlog', 'mediaEvents', 'mediaMembers', 'mediaOthers'],
       'Main Pages': ['homepageEN', 'homepageJA', 'aboutEN', 'aboutJA', 'eventsPageEN', 'eventsPageJA', 'joinEN', 'joinJA', 'contactEN', 'contactJA', 'privacyEN', 'privacyJA'],
       'Content': ['newsEN', 'newsJA', 'postsEN', 'postsJA', 'eventsEN', 'eventsJA'],
-      'Team': ['leadersEN', 'leadersJA'],
+      'Team': ['membersEN', 'membersJA'],
       'Settings': ['globalEN', 'globalJA'],
     },
   },
@@ -421,16 +421,16 @@ export default config({
         caption: fields.text({ label: 'Caption' }),
       },
     }),
-    mediaLeaders: collection({
-      label: 'Library: Leaders',
+    mediaMembers: collection({
+      label: 'Library: Members',
       slugField: 'name',
-      path: 'src/content/mediaLeaders/*',
+      path: 'src/content/mediaMembers/*',
       schema: {
         name: fields.slug({ name: { label: 'Name', validation: { isRequired: true } } }),
         file: fields.image({
           label: 'Image File',
-          directory: 'public/images/library/leaders',
-          publicPath: '/images/library/leaders/',
+          directory: 'public/images/library/members',
+          publicPath: '/images/library/members/',
           validation: { isRequired: true }
         }),
         alt: fields.text({ label: 'Alt Text' }),
@@ -514,10 +514,10 @@ export default config({
       },
     }),
 
-    leadersEN: collection({
-      label: 'Leaders (EN)',
+    membersEN: collection({
+      label: 'Members (EN)',
       slugField: 'name',
-      path: 'src/content/leadersEN/*',
+      path: 'src/content/membersEN/*',
       format: { contentField: 'bio' },
       schema: {
         name: fields.slug({ name: { label: 'Full Name', validation: { isRequired: true } } }),
@@ -535,7 +535,7 @@ export default config({
         leftDate: fields.date({ label: 'Graduation Month (Pick any day)', description: 'Only required for Alumni.' }),
         avatar: fields.relationship({
           label: 'Profile Picture',
-          collection: 'mediaLeaders',
+          collection: 'mediaMembers',
         }),
         website: fields.text({ label: 'Website' }),
         linkedin: fields.text({ label: 'LinkedIn' }),
@@ -546,10 +546,10 @@ export default config({
         bio: fields.markdoc(bioMarkdocConfig),
       },
     }),
-    leadersJA: collection({
-      label: 'Leaders (JA)',
+    membersJA: collection({
+      label: 'Members (JA)',
       slugField: 'name',
-      path: 'src/content/leadersJA/*',
+      path: 'src/content/membersJA/*',
       format: { contentField: 'bio' },
       schema: {
         name: fields.slug({ name: { label: 'Full Name', validation: { isRequired: true } } }),
@@ -567,7 +567,7 @@ export default config({
         leftDate: fields.date({ label: 'Graduation Month (Pick any day)' }),
         avatar: fields.relationship({
           label: 'Profile Picture',
-          collection: 'mediaLeaders',
+          collection: 'mediaMembers',
         }),
         website: fields.text({ label: 'Website' }),
         linkedin: fields.text({ label: 'LinkedIn' }),
