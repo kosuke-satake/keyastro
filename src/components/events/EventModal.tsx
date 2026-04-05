@@ -72,7 +72,7 @@ export default function EventModal({ event, onClose, lang }: EventModalProps) {
   };
 
   const formatTime = (date: Date) => {
-    return new Date(date).toLocaleTimeString(lang === 'ja' ? 'ja-JP' : undefined, { hour: '2-digit', minute: '2-digit' });
+    return new Date(date).toLocaleTimeString(lang === 'ja' ? 'ja-JP' : undefined, { hour: '2-digit', minute: '2-digit', timeZone: 'UTC' });
   };
 
   return (

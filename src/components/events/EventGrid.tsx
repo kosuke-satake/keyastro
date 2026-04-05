@@ -24,7 +24,7 @@ interface EventGridProps {
 const formatDateRange = (date: Date, endTime?: Date | null, lang?: 'en' | 'ja') => {
   const start = new Date(date);
   const end = endTime ? new Date(endTime) : null;
-  const opts: Intl.DateTimeFormatOptions = { year: 'numeric', month: 'short', day: 'numeric' };
+  const opts: Intl.DateTimeFormatOptions = { year: 'numeric', month: 'short', day: 'numeric', timeZone: 'UTC' };
   const startStr = start.toLocaleDateString(lang === 'ja' ? 'ja-JP' : undefined, opts);
   
   if (end) {

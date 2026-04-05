@@ -7,7 +7,7 @@ export interface CalendarEvent {
 }
 
 function formatDate(date: Date): string {
-  return date.toISOString().replace(/-|:|\.\d\d\d/g, '');
+  return date.toISOString().replace(/-|:|\.\d\d\d/g, '').replace('Z', '');
 }
 
 export function generateGoogleCalendarUrl(event: CalendarEvent): string {
