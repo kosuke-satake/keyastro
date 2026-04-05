@@ -330,13 +330,14 @@ const homepageSchemaJA = createHomepageSchema('ja');
 // -------------------------------------------------------------------
 
 export default config({
-  // PRODUCTION SWITCH: Automatically uses GitHub mode when built
+  // Set to local mode for out-of-the-box development.
+  // Switch to 'github' mode and configure repo to enable live editing on Cloudflare Pages.
   storage: {
-    kind: 'github',
-    repo: 'keyastro/site',
+    kind: 'local',
   },
   // storage: {
-  //   kind: 'local',
+  //   kind: 'github',
+  //   repo: 'YOUR_GITHUB_USERNAME/YOUR_REPOSITORY_NAME',
   // },
   
   ui: {
