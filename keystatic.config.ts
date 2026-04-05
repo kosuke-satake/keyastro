@@ -337,7 +337,7 @@ export default config({
     ? {
         kind: 'github',
         // IMPORTANT: If you fork this, replace this with your actual GitHub username and repository name!
-        repo: 'kosuke-satake/keyastro-template',
+        repo: 'kosuke-satake/keyastro',
       }
     : {
         kind: 'local',
