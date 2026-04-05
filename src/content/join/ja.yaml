@@ -3,40 +3,40 @@ subtitle: テンプレートのデプロイと使用方法
 membershipTitle: クイックセットアップ
 membershipBadge: オープンソース
 membershipContent: >-
-  リポジトリをクローンし、npmで依存関係をインストールし、開発サーバーを起動して、すぐにサイト構築を始めましょう。
+  リポジトリをクローンし，npmで依存関係をインストールし，開発サーバーを起動して，すぐにサイト構築を始めましょう．
 membershipButtonLink: https://github.com
 joinSteps:
   - title: リポジトリのクローン
-    desc: コードをローカルマシンにダウンロードします。
+    desc: コードをローカルマシンにダウンロードします．
     icon: 💻
   - title: Keystaticの起動
     desc: >-
-      ローカルCMSにアクセスしてデモコンテンツを編集します。
+      ローカルCMSにアクセスしてデモコンテンツを編集します．
     icon: ⚙️
   - title: デプロイ
-    desc: GitHubにプッシュし、Cloudflare Pagesにシームレスにデプロイします。
+    desc: GitHubにプッシュし，Cloudflare Pagesにシームレスにデプロイします．
     icon: 🚀
 followTitle: ドキュメント
-visualTagline: 速度と柔軟性のために構築。
+visualTagline: 速度と柔軟性のために構築．
 memberTitle: カスタマイズ
 memberBadge: 開発者ガイド
 memberContent: >-
-  このテンプレートは簡単に変更できるように設計されています。Tailwindの設定を編集したり、Astroコンポーネントを交換したり、設定ファイルで新しいKeystaticコレクションを定義したりできます。
+  このテンプレートは簡単に変更できるように設計されています．Tailwindの設定を編集したり，Astroコンポーネントを交換したり，設定ファイルで新しいKeystaticコレクションを定義したりできます．
 requirementsTitle: 前提条件
 requirementsList:
-  - Node.jsがインストールされていること。
-  - デプロイ用のGitHubアカウント。
+  - Node.jsがインストールされていること．
+  - デプロイ用のGitHubアカウント．
 applyButtonText: ソースコードを見る
-applyButtonNote: MITライセンスで提供されています。
+applyButtonNote: MITライセンスで提供されています．
 faqTitle: よくある質問
 faqSubtitle: KeyAstroに関するよくある質問
 faqList:
   - question: 完全無料ですか？
     answer: >-
-      はい！AstroもKeystaticもオープンソースで無料で使用できます。Cloudflare Pagesもホスティング用の十分な無料枠を提供しています。
+      はい！AstroもKeystaticもオープンソースで無料で使用できます．Cloudflare Pagesもホスティング用の十分な無料枠を提供しています．
   - question: テーマはどのように変更しますか？
     answer: >-
-      tailwind.config.jsファイルとグローバルCSSで、プライマリカラーとフォント設定を変更できます。
+      tailwind.config.jsファイルとグローバルCSSで，プライマリカラーとフォント設定を変更できます．
   - question: 新しい言語を追加できますか？
     answer: >-
-      はい。i18nユーティリティは拡張しやすいように設計されています。設定に新しいロケールを追加し、コンテンツフォルダを複製するだけです。
+      はい．i18nユーティリティは拡張しやすいように設計されています．設定に新しいロケールを追加し，コンテンツフォルダを複製するだけです．

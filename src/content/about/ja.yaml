@@ -2,22 +2,22 @@ title: KeyAstroについて
 subtitle: このテンプレートのアーキテクチャを理解する
 section1Title: フレームワーク
 section1Content: >-
-  KeyAstroはAstroを活用し、高速で安全、かつ検索エンジンに最適化された静的サイトを提供します。ビルド時にReactコンポーネントを静的HTMLにコンパイルし、不要なクライアントサイドJavaScriptを排除します。
+  KeyAstroはAstroを活用し，高速で安全，かつ検索エンジンに最適化された静的サイトを提供します．ビルド時にReactコンポーネントを静的HTMLにコンパイルし，不要なクライアントサイドJavaScriptを排除します．
 section2Title: CMS
 mission1Title: Gitベースのコンテンツ
 mission1Desc: >-
-  従来のデータベースとは異なり、KeystaticはデータをYAML、JSON、Markdocファイルとしてリポジトリに直接保存します。
+  従来のデータベースとは異なり，KeystaticはデータをYAML，JSON，Markdocファイルとしてリポジトリに直接保存します．
 mission2Title: 視覚的な編集
 mission2Desc: >-
-  Gitのバージョン管理の利点を犠牲にすることなく、美しく直感的な管理インターフェースを利用できます。
+  Gitのバージョン管理の利点を犠牲にすることなく，美しく直感的な管理インターフェースを利用できます．
 section3Title: コア技術
 activities:
   - >-
-    Astro: 静的サイト生成とコンポーネントアイランドアーキテクチャ。
+    Astro: 静的サイト生成とコンポーネントアイランドアーキテクチャ．
   - >-
-    React & Tailwind CSS: UIコンポーネントとスタイリング。
+    React & Tailwind CSS: UIコンポーネントとスタイリング．
   - >-
-    Markdoc: 強力で拡張可能なMarkdownコンテンツ作成。
+    Markdoc: 強力で拡張可能なMarkdownコンテンツ作成．
 galleryTitle: インターフェースプレビュー
 galleryImages:
   - discriminant: events
