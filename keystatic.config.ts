@@ -330,15 +330,18 @@ const homepageSchemaJA = createHomepageSchema('ja');
 // -------------------------------------------------------------------
 
 export default config({
-  // Set to local mode for out-of-the-box development.
-  // Switch to 'github' mode and configure repo to enable live editing on Cloudflare Pages.
-  storage: {
-    kind: 'local',
-  },
-  // storage: {
-  //   kind: 'github',
-  //   repo: 'YOUR_GITHUB_USERNAME/YOUR_REPOSITORY_NAME',
-  // },
+  // Dynamic Storage: 
+  // 'local' mode during `npm run dev` (saves to your local computer).
+  // 'github' mode during production builds on Cloudflare/Vercel (requires GitHub App setup).
+  storage: process.env.NODE_ENV === 'production'
+    ? {
+        kind: 'github',
+        // IMPORTANT: If you fork this, replace this with your actual GitHub username and repository name!
+        repo: 'kosuke-satake/keyastro-template',
+      }
+    : {
+        kind: 'local',
+      },
   
   ui: {
     brand: { name: 'KeyAstro Admin' },
