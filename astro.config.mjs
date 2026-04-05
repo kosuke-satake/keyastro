@@ -13,7 +13,7 @@ import sitemap from '@astrojs/sitemap';
 
 // https://astro.build/config
 export default defineConfig({
-  site: 'https://keyastro.pages.dev',
+  site: 'https://key-astro.pages.dev',
   trailingSlash: 'never',
 
   integrations: [react(), keystatic(), markdoc(), sitemap()],

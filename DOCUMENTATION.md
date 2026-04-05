@@ -102,16 +102,22 @@ To edit your site directly from the live URL, you must enable **GitHub Mode**.
    }
    ```
 
-2. **Deploy to Cloudflare Pages (or Vercel):**
-   Push your code to GitHub and connect the repository to your hosting provider. Make sure your build command is `npm run build` and output directory is `dist`.
+2. **Deploy to Cloudflare Pages:**
+   Push your code to GitHub and connect the repository to your hosting provider. Make sure your build settings are exactly as follows:
+   - **Framework preset:** `Astro`
+   - **Build command:** `npm run build`
+   - **Build output directory:** `dist`
 
 3. **Create a GitHub App:**
-   - Go to GitHub -> Settings -> Developer Settings -> GitHub Apps -> **New GitHub App**.
-   - **Homepage URL:** `https://your-site.pages.dev`
-   - **Callback URL:** `https://your-site.pages.dev/api/keystatic/github/oauth/callback`
-   - **Webhook:** Disable "Active".
-   - **Permissions:** Set "Contents" to **Read & write**.
-   - Generate a **Client Secret**.
+   - Go to **GitHub.com** -> Click your Profile Picture -> **Settings** -> **Developer Settings** (at the bottom left) -> **GitHub Apps** -> **New GitHub App**.
+   - **GitHub App name:** `KeyAstro Editor` (or any unique name you want)
+   - **Homepage URL:** `https://key-astro.pages.dev` (Your live Cloudflare URL)
+   - **Callback URL:** `https://key-astro.pages.dev/api/keystatic/github/oauth/callback`
+   - **Webhook:** Disable "Active" (You do not need Webhooks).
+   - **Repository permissions:** Find **Contents** and change it to **Read and write**.
+   - Click **Create GitHub App**.
+   - On the next screen, click **Generate a new client secret**. Keep this tab open for the next step!
+   - **Install the App:** In the left sidebar of your new GitHub App, click **Install App** and install it on your repository.
 
 4. **Set Environment Variables:**
    In your hosting provider's dashboard (e.g., Cloudflare Pages Settings -> Environment variables), add the following:

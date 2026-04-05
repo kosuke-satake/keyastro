@@ -27,14 +27,18 @@ This is the official website for KeyAstro (Astro + Keystatic Template), built wi
 - `src/layouts/`: Base layouts (like `Layout.astro` containing the `head`, `Header`, and `Footer`).
 - `keystatic.config.ts`: Configuration file defining the CMS schemas for leaders, events, homepage, etc.
 
-## 🚢 Deployment
+## 🚢 Deployment (Cloudflare Pages)
 
 The site is configured to be deployed on **Cloudflare Pages** using the `@astrojs/cloudflare` adapter.
-When you push to the `main` branch, Cloudflare will automatically build and deploy the site using:
+When you push your code to your repository, connect it to Cloudflare Pages with these exact settings:
 
-```bash
-npm run build
-```
+1. **Framework preset:** `Astro`
+2. **Build command:** `npm run build`
+3. **Build output directory:** `dist`
+
+Cloudflare will automatically build and deploy the site.
+
+For detailed instructions on how to set up the **GitHub App** to allow Keystatic editing on your live Cloudflare site, please read the `DOCUMENTATION.md` file included in this repository.
 
 ## 🌐 Localization
 

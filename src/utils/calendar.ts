@@ -31,7 +31,7 @@ export function generateIcsContent(event: CalendarEvent): string {
 VERSION:2.0
 PRODID:-//KeyAstro//Website//EN
 BEGIN:VEVENT
-UID:${now}-${event.startDate.getTime()}@keyastro.pages.dev
+UID:${now}-${event.startDate.getTime()}@key-astro.pages.dev
 DTSTAMP:${now}
 DTSTART:${formatDate(event.startDate)}
 DTEND:${formatDate(end)}
