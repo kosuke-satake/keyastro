@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+Disallow: /keystatic/
+Disallow: /api/keystatic/
+
+Sitemap: https://keyastro.pages.dev/sitemap-index.xml
+Sitemap: https://keyastro.pages.dev/sitemap-0.xml

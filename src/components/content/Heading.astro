@@ -1,0 +1,14 @@
+---
+interface Props {
+  level: number | string;
+  id?: string;
+  class?: string;
+}
+
+const { level, id } = Astro.props;
+const Tag = `h${level}` as any;
+---
+<Tag id={id} class="font-bold text-gray-900 dark:text-white tracking-tight group relative">
+  <span class="absolute -left-6 top-0 hidden group-hover:block opacity-50">#</span>
+  <slot />
+</Tag>

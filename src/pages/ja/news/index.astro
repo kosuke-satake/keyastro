@@ -1,0 +1,71 @@
+---
+import Layout from '../../../layouts/Layout.astro';
+import { getCollection } from 'astro:content';
+import Markdoc from '@markdoc/markdoc';
+import { headingNode, tableTag, imageNode } from '../../../utils/markdocConfig';
+
+export const prerender = true;
+
+const newsRaw = (await getCollection('newsJA')).sort(
+	(a, b) => b.data.publishedDate.valueOf() - a.data.publishedDate.valueOf()
+);
+
+const news = newsRaw.map(item => {
+  const ast = Markdoc.parse(item.body);
+  const content = Markdoc.transform(ast, {
+    nodes: { heading: headingNode, image: imageNode },
+    tags: { table: tableTag }
+  });
+  const html = Markdoc.renderers.html(content);
+  
+  return {
+    slug: item.slug, 
+    data: {
+      publishedDate: item.data.publishedDate,
+      important: item.data.important,
+      title: item.data.title,
+      content: html
+    }
+  };
+});
+---
+
+<Layout title="ニュース & お知らせ - KeyAstro">
+  <div class="bg-white dark:bg-gray-900 pt-24 pb-12 transition-colors duration-300">
+    <div class="max-w-7xl mx-auto px-6 lg:px-8">
+      <h1 class="text-4xl font-bold tracking-tight text-gray-900 dark:text-white sm:text-5xl mb-4">ニュース & お知らせ</h1>
+      <p class="text-xl text-gray-500 dark:text-gray-400 max-w-2xl">公式アップデート，募集要項，緊急のお知らせ．</p>
+    </div>
+  </div>
+
+  <div class="max-w-7xl mx-auto px-6 lg:px-8 pb-24">
+    {news.length > 0 ? (
+      <div class="space-y-8">
+        {news.map((item) => (
+          <article class="flex flex-col sm:flex-row gap-6 p-8 rounded-2xl bg-gray-50 dark:bg-gray-800 border border-gray-100 dark:border-gray-700 hover:border-primary transition-colors">
+            <div class="sm:w-32 flex-shrink-0">
+               <time datetime={item.data.publishedDate.toISOString()} class="text-sm text-gray-500 dark:text-gray-400 font-mono">
+                  {item.data.publishedDate.toLocaleDateString('ja-JP', { year: 'numeric', month: 'short', day: 'numeric' })}
+               </time>
+               {item.data.important && (
+                 <span class="mt-2 block w-fit rounded-full bg-red-100 dark:bg-red-900/30 px-2.5 py-0.5 text-xs font-medium text-red-800 dark:text-red-200">
+                   重要
+                 </span>
+               )}
+            </div>
+            <div class="flex-grow">
+               <h2 class="text-xl font-semibold text-gray-900 dark:text-white mb-4">
+                  {item.data.title}
+               </h2>
+               <div class="prose prose-blue dark:prose-invert text-gray-600 dark:text-gray-300" set:html={item.data.content} />
+            </div>
+          </article>
+        ))}
+      </div>
+    ) : (
+      <div class="text-center py-20 bg-gray-50 dark:bg-gray-800 rounded-3xl border border-dashed border-gray-300 dark:border-gray-700">
+        <p class="text-gray-500 dark:text-gray-400 text-lg">お知らせはありません．</p>
+      </div>
+    )}
+  </div>
+</Layout>

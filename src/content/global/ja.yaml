@@ -1,0 +1,18 @@
+siteTitle: KeyAstro テンプレート
+footerDescription: |-
+  Astro、Tailwind、Keystaticで構築された、モダンで高パフォーマンスな静的サイトテンプレート。
+footerLinksTitle: テンプレートページ
+footerConnectTitle: リソース
+footerRightsText: Open Source. MIT License.
+socialLinks:
+  - platform: GitHub
+    url: https://github.com
+    icon: github
+navHome: ホーム
+navAbout: アーキテクチャ
+navLeaders: 作成者
+navBlog: ドキュメント
+navEvents: デモイベント
+navJoin: はじめに
+navContact: デモフォーム
+navPrivacy: デモプライバシー

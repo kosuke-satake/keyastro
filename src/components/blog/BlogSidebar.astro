@@ -1,0 +1,62 @@
+---
+import BlogSearch from './BlogSearch';
+
+interface Props {
+  tags: { name: string; count: number }[];
+  archive: { year: number; count: number }[];
+  lang?: 'en' | 'ja';
+}
+
+const { tags, archive, lang = 'en' } = Astro.props;
+---
+
+<div class="space-y-8">
+  {/* Search */}
+  <div class="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700">
+          <h3 class="font-bold text-gray-900 dark:text-white mb-4">{lang === 'ja' ? '検索' : 'Search'}</h3>
+          <BlogSearch client:idle lang={lang} />
+        </div>
+  {/* Categories / Tags */}
+  <div class="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700">
+    <div class="flex items-center justify-between mb-4">
+      <h3 class="font-bold text-gray-900 dark:text-white">{lang === 'ja' ? 'カテゴリー' : 'Categories'}</h3>
+      <a href={`/${lang}/blog/category`} class="text-xs text-primary hover:underline">{lang === 'ja' ? 'すべて見る' : 'View All'}</a>
+    </div>
+    <div class="flex flex-wrap gap-2">
+      {tags.length > 0 ? tags.slice(0, 10).map((tag) => (
+        <a 
+          href={`/${lang}/blog/category/${tag.name}`} 
+          class="px-3 py-1 bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 rounded-full text-sm hover:bg-primary hover:text-white transition-colors flex items-center"
+        >
+          {tag.name}
+          <span class="ml-2 text-xs opacity-70 bg-black/5 dark:bg-white/10 px-1.5 rounded-full">{tag.count}</span>
+        </a>
+      )) : (
+        <p class="text-gray-500 text-sm text-center w-full">{lang === 'ja' ? 'カテゴリーはありません' : 'No categories yet.'}</p>
+      )}
+    </div>
+  </div>
+
+  {/* Archive */}
+  <div class="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700">
+    <div class="flex items-center justify-between mb-4">
+      <h3 class="font-bold text-gray-900 dark:text-white">{lang === 'ja' ? 'アーカイブ' : 'Archive'}</h3>
+      <a href={`/${lang}/blog/archive`} class="text-xs text-primary hover:underline">{lang === 'ja' ? 'すべて見る' : 'View All'}</a>
+    </div>
+    <ul class="space-y-2">
+      {archive.length > 0 ? archive.slice(0, 5).map((item) => (
+        <li>
+          <a 
+            href={`/${lang}/blog/archive/${item.year}`} 
+            class="flex items-center justify-between text-gray-600 dark:text-gray-300 hover:text-primary dark:hover:text-primary transition-colors text-sm group"
+          >
+            <span class="group-hover:translate-x-1 transition-transform">{item.year}</span>
+            <span class="bg-gray-100 dark:bg-gray-700 text-xs px-2 py-0.5 rounded-full text-gray-500 dark:text-gray-400">{item.count}</span>
+          </a>
+        </li>
+      )) : (
+        <li class="text-gray-500 text-sm">{lang === 'ja' ? 'アーカイブはありません' : 'No archive yet.'}</li>
+      )}
+    </ul>
+  </div>
+</div>

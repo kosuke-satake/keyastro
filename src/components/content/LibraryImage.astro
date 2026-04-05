@@ -1,0 +1,37 @@
+---
+import { getMediaImage } from '../../utils/media';
+
+interface Props {
+  discriminant: 'blog' | 'events' | 'leaders' | 'others';
+  value: string;
+  alt?: string;
+  caption?: string;
+}
+
+const { discriminant, value, alt, caption } = Astro.props;
+
+// Reconstruct the conditional object for the utility
+const imageRef = { discriminant, value };
+const src = await getMediaImage(imageRef);
+---
+
+{src ? (
+  <figure class="my-8">
+    <img 
+      src={src} 
+      alt={alt || ''} 
+      class="w-full h-auto rounded-xl shadow-lg border border-gray-100 dark:border-gray-800 bg-gray-50 dark:bg-gray-800"
+      loading="lazy"
+      decoding="async"
+    />
+    {caption && (
+      <figcaption class="mt-3 text-center text-sm text-gray-500 dark:text-gray-400 italic">
+        {caption}
+      </figcaption>
+    )}
+  </figure>
+) : (
+  <div class="p-4 border border-red-200 bg-red-50 text-red-600 rounded-lg text-sm">
+    Image not found: {discriminant}/{value}
+  </div>
+)}

@@ -1,0 +1,29 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { getEntry } from 'astro:content';
+import Markdoc from '@markdoc/markdoc';
+import { headingNode } from '../../utils/markdocConfig';
+
+const entry = await getEntry('privacy', 'en');
+if (!entry) throw new Error('Privacy Policy data not found');
+const { title, lastUpdated } = entry.data;
+
+const ast = Markdoc.parse(entry.body);
+const content = Markdoc.transform(ast, {
+  nodes: { heading: headingNode }
+});
+const html = Markdoc.renderers.html(content);
+---
+
+<Layout title={`${title} - KeyAstro`}>
+  <div class="bg-gray-50 dark:bg-gray-900 min-h-screen pt-32 pb-24 transition-colors duration-300">
+    <div class="max-w-4xl mx-auto px-6 lg:px-8">
+      <div class="bg-white dark:bg-gray-950 rounded-3xl p-8 md:p-16 shadow-xl border border-gray-100 dark:border-gray-800">
+        <h1 class="text-3xl md:text-5xl font-bold text-gray-900 dark:text-white mb-4">{title}</h1>
+        <p class="text-gray-500 dark:text-gray-400 mb-12 font-mono text-sm">Last Updated: {lastUpdated.toLocaleDateString('en-US', { dateStyle: 'long' })}</p>
+        
+        <div class="prose prose-lg prose-blue dark:prose-invert max-w-none" set:html={html} />
+      </div>
+    </div>
+  </div>
+</Layout>

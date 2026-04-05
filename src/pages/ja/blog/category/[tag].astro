@@ -1,0 +1,119 @@
+---
+import Layout from '../../../../layouts/Layout.astro';
+import BlogSidebar from '../../../../components/blog/BlogSidebar.astro';
+import Breadcrumbs from '../../../../components/ui/Breadcrumbs.astro';
+import { getCollection, type CollectionEntry } from 'astro:content';
+import type { GetStaticPaths } from 'astro';
+import { getMediaImage } from '../../../../utils/media';
+
+export const prerender = true;
+
+export const getStaticPaths = (async () => {
+  const allPosts = await getCollection('postsJA');
+  
+  // Calculate Global Stats
+  const tagCounts: Record<string, number> = {};
+  allPosts.forEach(p => p.data.tags?.forEach(t => tagCounts[t] = (tagCounts[t]||0) + 1));
+  const tags = Object.entries(tagCounts).map(([name, count]) => ({ name, count: Number(count) })).sort((a,b) => b.count - a.count);
+
+  const archiveCounts: Record<number, number> = {};
+  allPosts.forEach(p => {
+    const y = p.data.publishedDate.getFullYear();
+    archiveCounts[y] = (archiveCounts[y]||0) + 1;
+  });
+  const archive = Object.entries(archiveCounts).map(([year, count]) => ({ year: parseInt(year), count: Number(count) })).sort((a,b) => b.year - a.year);
+
+  // Tags for paths
+  const allTags = [...new Set(allPosts.flatMap(p => p.data.tags || []))];
+  
+  return allTags.map(tag => {
+    const filteredPosts = allPosts.filter(p => p.data.tags?.includes(tag))
+      .sort((a, b) => b.data.publishedDate.valueOf() - a.data.publishedDate.valueOf());
+      
+    return {
+      params: { tag },
+      props: { posts: filteredPosts, tagName: tag, tags, archive }
+    };
+  });
+}) satisfies GetStaticPaths;
+
+interface Props {
+  posts: CollectionEntry<'postsJA'>[];
+  tagName: string;
+  tags: { name: string; count: number }[];
+  archive: { year: number; count: number }[];
+}
+
+const { posts, tagName, tags, archive } = Astro.props;
+
+// Resolve images
+const postsWithImages = await Promise.all(posts.map(async p => ({
+  ...p,
+  coverImageSrc: await getMediaImage(p.data.coverImage)
+})));
+---
+
+<Layout title={`カテゴリー: ${tagName} - KeyAstro ブログ`}>
+  <div class="bg-gray-50 dark:bg-gray-900 min-h-screen transition-colors duration-300">
+    <div class="bg-white dark:bg-gray-950 border-b border-gray-200 dark:border-gray-800 pt-24 pb-16">
+      <div class="max-w-7xl mx-auto px-6 lg:px-8 text-center">
+        <span class="text-primary font-bold tracking-wider uppercase text-sm mb-2 block">カテゴリー</span>
+        <h1 class="text-4xl font-extrabold text-gray-900 dark:text-white sm:text-6xl mb-4">{tagName}</h1>
+      </div>
+    </div>
+
+    <div class="max-w-7xl mx-auto px-6 lg:px-8 py-12">
+      <Breadcrumbs />
+      <div class="grid lg:grid-cols-12 gap-12">
+        <div class="lg:col-span-4 lg:order-2 space-y-8">
+          <BlogSidebar tags={tags} archive={archive} lang="ja" />
+        </div>
+
+        <div class="lg:col-span-8 lg:order-1">
+          <div class="grid gap-8 sm:grid-cols-2">
+            {postsWithImages.map((post) => (
+              <article class="flex flex-col bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 overflow-hidden hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
+                {post.coverImageSrc && (
+                  <a href={`/ja/blog/${post.slug}`} class="block aspect-video overflow-hidden">
+                    <img 
+                      src={post.coverImageSrc} 
+                      alt={post.data.title} 
+                      class="w-full h-full object-cover hover:scale-105 transition-transform duration-700"
+                    />
+                  </a>
+                )}
+                <div class="p-6 flex-1 flex flex-col">
+                  <div class="flex items-center gap-2 mb-3">
+                    <span class="text-xs text-gray-500 dark:text-gray-400">
+                      {post.data.publishedDate.toLocaleDateString('ja-JP', { dateStyle: 'medium' })}
+                    </span>
+                  </div>
+                  
+                  <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-2 line-clamp-2">
+                    <a href={`/ja/blog/${post.slug}`} class="hover:text-primary transition-colors">
+                      {post.data.title}
+                    </a>
+                  </h3>
+                  
+                  {post.data.author && (
+                    <p class="text-xs text-gray-500 dark:text-gray-400 mb-3 font-medium">
+                      著者: {post.data.author}
+                    </p>
+                  )}
+
+                  <p class="text-gray-600 dark:text-gray-300 text-sm line-clamp-3 mb-4 flex-1">
+                    {post.data.summary}
+                  </p>
+                  
+                  <a href={`/ja/blog/${post.slug}`} class="inline-flex items-center text-sm font-medium text-primary hover:text-primary-hover">
+                    記事を読む →
+                  </a>
+                </div>
+              </article>
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</Layout>

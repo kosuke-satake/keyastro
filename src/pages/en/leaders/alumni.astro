@@ -1,0 +1,74 @@
+---
+import Layout from '../../../layouts/Layout.astro';
+import LeaderGrid from '../../../components/sections/LeaderGrid';
+import { getCollection } from 'astro:content';
+import Markdoc from '@markdoc/markdoc';
+import { headingNode, tableTag } from '../../../utils/markdocConfig';
+import { getMediaImage } from '../../../utils/media';
+
+export const prerender = true;
+
+const leadersRaw = await getCollection('leadersEN');
+
+const leaders = await Promise.all(leadersRaw.map(async leader => {
+  // Parse Bio from Body
+  const ast = Markdoc.parse(leader.body);
+  const content = Markdoc.transform(ast, {
+    nodes: { heading: headingNode },
+    tags: { table: tableTag }
+  });
+  const bioHtml = Markdoc.renderers.html(content);
+
+  return {
+    slug: leader.slug, 
+    data: {
+      avatar: await getMediaImage(leader.data.avatar, 'mediaLeaders'),
+      linkedin: leader.data.linkedin,
+      instagram: leader.data.instagram,
+      facebook: leader.data.facebook,
+      website: leader.data.website,
+      github: leader.data.github,
+      twitter: leader.data.twitter,
+      name: leader.data.name,
+      role: leader.data.role,
+      category: leader.data.category,
+      joinedDate: leader.data.joinedDate,
+      leftDate: leader.data.leftDate,
+      bioHtml: bioHtml,
+      tenure: `${leader.data.joinedDate.toLocaleDateString('en-US', { month: 'long', year: 'numeric' })} - ${leader.data.leftDate ? leader.data.leftDate.toLocaleDateString('en-US', { month: 'long', year: 'numeric' }) : 'Present'}`
+    }
+  };
+}));
+
+const alumni = leaders.filter(l => l.data.category === 'alumni')
+  .sort((a, b) => b.data.leftDate ? b.data.leftDate!.valueOf() - a.data.leftDate!.valueOf() : 0);
+
+const titles = {
+  active: "",
+  alumni: "Alumni",
+  advisor: ""
+};
+---
+
+<Layout title="Alumni - KeyAstro">
+  <div class="bg-gray-50 dark:bg-gray-900 pt-40 pb-24 transition-colors duration-300">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+      <h1 class="text-4xl font-extrabold text-gray-900 dark:text-white sm:text-5xl">Alumni</h1>
+      <p class="mt-4 text-xl text-gray-500 dark:text-gray-400">Former members who shaped KeyAstro.</p>
+    </div>
+  </div>
+
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+    <LeaderGrid 
+      client:visible 
+      activeMembers={[]} 
+      alumni={alumni} 
+      advisors={[]} 
+      titles={titles}
+    />
+    
+    <div class="mt-16 text-center">
+      <a href="/en/leaders" class="text-primary hover:underline">← Back to Current Leaders</a>
+    </div>
+  </div>
+</Layout>

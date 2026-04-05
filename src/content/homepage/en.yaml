@@ -1,0 +1,59 @@
+heroSubtitle: Astro + Keystatic • Open Source
+heroTitle: KeyAstro
+heroTypewriterWords:
+  - Lightning-fast performance
+  - Markdown-powered CMS
+heroDescription: >-
+  Welcome to the KeyAstro Template. 
+  
+  This is a fully functional, multilingual website template built with Astro, Tailwind CSS, and Keystatic. It provides a seamless developer and editor experience.
+ctaJoin: Get Started
+ctaLearn: View Documentation
+featuresTitle: Template Features
+featuresSubtitle: Discover what makes KeyAstro the perfect starting point for your next project.
+featureList:
+  - title: Astro Architecture
+    description: >-
+      Built on top of Astro, delivering zero-JS frontend by default for maximum speed and SEO performance.
+    largeImage:
+      discriminant: events
+      value: placeholder-event
+    icon:
+      discriminant: emoji
+      value: 🚀
+    colorTheme: pink
+  - title: Keystatic Local CMS
+    description: >-
+      Manage your content seamlessly with Keystatic. Your content lives right in your GitHub repository alongside your code.
+    largeImage:
+      discriminant: events
+      value: placeholder-event
+    icon:
+      discriminant: emoji
+      value: 📝
+    colorTheme: blue
+  - title: Built-in i18n
+    description: >-
+      Fully configured for English and Japanese out of the box, with independent content collections for each language.
+    largeImage:
+      discriminant: events
+      value: placeholder-event
+    icon:
+      discriminant: emoji
+      value: 🌍
+    colorTheme: orange
+blogTitle: Documentation Blog
+blogSubtitle: Learn how to customize and deploy this template.
+eventsTitle: Demo Events
+eventsSubtitle: An example of the events collection schema.
+statsTitle: Tech Stack
+statsSubtitle: Powered by modern web technologies.
+statsList:
+  - label: Framework
+    value: Astro 5
+  - label: Styling
+    value: Tailwind 4
+  - label: CMS
+    value: Keystatic
+  - label: Content
+    value: Markdoc

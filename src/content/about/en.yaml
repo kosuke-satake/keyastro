@@ -1,0 +1,24 @@
+title: About KeyAstro
+subtitle: Understanding the architecture of this template.
+section1Title: The Framework
+section1Content: >-
+  KeyAstro leverages Astro to deliver a static site that is fast, secure, and highly optimized for search engines. It compiles React components into static HTML at build time, eliminating unnecessary client-side JavaScript.
+section2Title: The CMS
+mission1Title: Git-Backed Content
+mission1Desc: >-
+  Unlike traditional databases, Keystatic stores your data as YAML, JSON, and Markdoc files directly in your repository.
+mission2Title: Visual Editing
+mission2Desc: >-
+  You get a beautiful, intuitive admin interface without sacrificing the benefits of Git version control.
+section3Title: Core Technologies
+activities:
+  - >-
+    Astro: For static site generation and component islands.
+  - >-
+    React & Tailwind CSS: For UI components and styling.
+  - >-
+    Markdoc: For powerful, extensible Markdown content authoring.
+galleryTitle: Interface Previews
+galleryImages:
+  - discriminant: events
+    value: placeholder-event

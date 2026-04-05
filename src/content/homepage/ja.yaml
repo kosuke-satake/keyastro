@@ -1,0 +1,56 @@
+heroSubtitle: Astro + Keystatic • オープンソース
+heroTitle: KeyAstro
+heroTypewriterWords:
+  - 圧倒的なパフォーマンス
+  - MarkdownベースのCMS
+heroDescription: |-
+  KeyAstroテンプレートへようこそ。
+  Astro、Tailwind CSS、Keystaticで構築された、多言語対応のフル機能ウェブサイトテンプレートです。開発者と編集者の両方に快適な体験を提供します。
+ctaJoin: はじめる
+ctaLearn: ドキュメントを見る
+featuresTitle: テンプレートの特徴
+featuresSubtitle: KeyAstroが次のプロジェクトの完璧なスタート地点となる理由。
+featureList:
+  - title: Astro アーキテクチャ
+    description: Astroをベースに構築され、デフォルトでゼロJSのフロントエンドを提供し、最大限の速度とSEOパフォーマンスを実現します。
+    largeImage:
+      discriminant: events
+      value: placeholder-event
+    icon:
+      discriminant: emoji
+      value: 🚀
+    colorTheme: pink
+  - title: Keystatic ローカルCMS
+    description: >-
+      Keystaticを使ってコンテンツをシームレスに管理。コンテンツはコードとともにGitHubリポジトリで管理されます。
+    largeImage:
+      discriminant: events
+      value: placeholder-event
+    icon:
+      discriminant: emoji
+      value: 📝
+    colorTheme: blue
+  - title: 組み込みの多言語対応
+    description: 英語と日本語の対応が初期設定されており、言語ごとに独立したコンテンツコレクションを備えています。
+    largeImage:
+      discriminant: events
+      value: placeholder-event
+    icon:
+      discriminant: emoji
+      value: 🌍
+    colorTheme: orange
+blogTitle: ドキュメントブログ
+blogSubtitle: テンプレートのカスタマイズとデプロイ方法を学ぶ。
+eventsTitle: デモイベント
+eventsSubtitle: イベントコレクションスキーマの例。
+statsTitle: テックスタック
+statsSubtitle: モダンなウェブ技術を採用。
+statsList:
+  - label: フレームワーク
+    value: Astro 5
+  - label: スタイリング
+    value: Tailwind 4
+  - label: CMS
+    value: Keystatic
+  - label: コンテンツ
+    value: Markdoc

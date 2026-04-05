@@ -1,0 +1,159 @@
+---
+import '../styles/global.css';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import { ClientRouter } from 'astro:transitions';
+import { getLangFromUrl } from '../utils/i18n';
+import { getEntry } from 'astro:content';
+import { getMediaImage } from '../utils/media';
+
+interface Props {
+  title?: string;
+  description?: string;
+  image?: string;
+  type?: 'website' | 'article';
+  articleDate?: Date;
+}
+
+const lang = getLangFromUrl(Astro.url);
+
+// Fetch Global Settings for Defaults
+const globalEntry = await getEntry('global', lang);
+if (!globalEntry) {
+  throw new Error(`Global content not found for language: ${lang}`);
+}
+const globalData = globalEntry.data;
+
+// Resolve site image
+const resolvedSiteImage = await getMediaImage(globalData.siteImage);
+
+const { 
+  title = globalData.siteTitle || "KeyAstro", 
+  description = globalData.siteDescription || "Astro + Keystatic Template",
+  image = resolvedSiteImage || "/images/placeholder.svg",
+  type = "website",
+  articleDate
+} = Astro.props;
+
+// Normalize the pathname to ensure consistent canonical URLs (no trailing slash unless it's just '/')
+let cleanPathname = Astro.url.pathname;
+if (cleanPathname.length > 1 && cleanPathname.endsWith('/')) {
+  cleanPathname = cleanPathname.slice(0, -1);
+}
+
+const canonicalURL = new URL(cleanPathname, Astro.site || 'https://keyastro.pages.dev');
+const socialImageURL = new URL(image, Astro.site || 'https://keyastro.pages.dev');
+
+// Alternate Language Pathnames
+const enPathname = cleanPathname.replace(/^\/(ja|en)/, '/en');
+const jaPathname = cleanPathname.replace(/^\/(ja|en)/, '/ja');
+---
+
+<!doctype html>
+<html lang={lang} class="scroll-smooth">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width" />
+		<link rel="icon" href="/icon/favicon.ico" sizes="any" />
+		<link rel="icon" type="image/svg+xml" href="/icon/favicon.svg" />
+		<meta name="generator" content={Astro.generator} />
+    
+    <ClientRouter />
+
+    <!-- Canonical URL -->
+    <link rel="canonical" href={canonicalURL} />
+    
+    <!-- Alternate Language URLs -->
+    <link rel="alternate" hreflang="en" href={new URL(enPathname, Astro.site || 'https://keyastro.pages.dev')} />
+    <link rel="alternate" hreflang="ja" href={new URL(jaPathname, Astro.site || 'https://keyastro.pages.dev')} />
+    <link rel="alternate" hreflang="x-default" href={new URL(enPathname, Astro.site || 'https://keyastro.pages.dev')} />
+
+    <!-- Primary Meta Tags -->
+    <title>{title} | KeyAstro</title>
+    <meta name="title" content={`${title} | KeyAstro`} />
+    <meta name="description" content={description} />
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content={type} />
+    <meta property="og:url" content={canonicalURL} />
+    <meta property="og:title" content={`${title} | KeyAstro`} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content={socialImageURL} />
+    <meta property="og:site_name" content="KeyAstro" />
+    {articleDate && (
+      <meta property="article:published_time" content={articleDate.toISOString()} />
+    )}
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image" />
+    <meta property="twitter:url" content={canonicalURL} />
+    <meta property="twitter:title" content={`${title} | KeyAstro`} />
+    <meta property="twitter:description" content={description} />
+    <meta property="twitter:image" content={socialImageURL} />
+
+    <!-- Site Name Structured Data -->
+    <script type="application/ld+json" is:inline>
+      {
+        "@context": "https://schema.org",
+        "@type": "WebSite",
+        "name": "KeyAstro",
+        "alternateName": ["KeyAstro Official", "Astro + Keystatic Template"],
+        "url": "https://keyastro.pages.dev/"
+      }
+    </script>
+
+    <!-- Google Fonts: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Theme Script -->
+    <script is:inline>
+      // Apply theme immediately to avoid FOUC
+      const theme = (() => {
+        if (typeof localStorage !== 'undefined' && localStorage.getItem('theme')) {
+          return localStorage.getItem('theme');
+        }
+        if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+          return 'dark';
+        }
+        return 'light';
+      })();
+    
+      if (theme === 'dark') {
+        document.documentElement.classList.add('dark');
+      } else {
+        document.documentElement.classList.remove('dark');
+      }
+
+      // Apply color theme
+      const colorTheme = localStorage.getItem('color-theme') || 'blue';
+      if (colorTheme !== 'blue') {
+        document.documentElement.classList.add(`theme-${colorTheme}`);
+      }
+
+      // Re-apply on view transitions
+      document.addEventListener('astro:after-swap', () => {
+        if (localStorage.getItem('theme') === 'dark') {
+          document.documentElement.classList.add('dark');
+        } else {
+          document.documentElement.classList.remove('dark');
+        }
+
+        const storedColor = localStorage.getItem('color-theme') || 'blue';
+        const themes = ['blue', 'purple', 'green', 'orange'];
+        themes.forEach(t => document.documentElement.classList.remove(`theme-${t}`));
+        if (storedColor !== 'blue') {
+          document.documentElement.classList.add(`theme-${storedColor}`);
+        }
+      });
+    </script>
+	</head>
+	<body class="font-sans antialiased text-gray-900 bg-gray-50 dark:bg-gray-900 dark:text-gray-100 flex flex-col min-h-screen transition-colors duration-300">
+    <Header />
+    <main class="flex-grow">
+		  <slot />
+    </main>
+    <Footer />
+	</body>
+</html>

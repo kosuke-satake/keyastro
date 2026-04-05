@@ -1,0 +1,128 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Hero from '../../components/sections/Hero';
+import Features from '../../components/sections/Features';
+import Stats from '../../components/sections/Stats';
+import BlogSection from '../../components/sections/BlogSection';
+import NewsSection from '../../components/sections/NewsSection';
+import UpcomingEvents from '../../components/sections/UpcomingEvents';
+import { getCollection, getEntry } from 'astro:content';
+import Markdoc from '@markdoc/markdoc';
+import { imageNode } from '../../utils/markdocConfig';
+import { getMediaImage } from '../../utils/media';
+
+export const prerender = true;
+
+// Get Homepage Data
+const homepage = await getEntry('homepage', 'en');
+if (!homepage) throw new Error('Homepage data not found');
+const { data } = homepage;
+
+const resolvedFeatureList = await Promise.all(data.featureList.map(async (feature) => ({
+  ...feature,
+  largeImage: await getMediaImage(feature.largeImage),
+  icon: {
+    discriminant: feature.icon.discriminant,
+    value: feature.icon.discriminant === 'image' 
+      ? await getMediaImage(feature.icon.value) 
+      : feature.icon.value
+  }
+})));
+
+const resolvedData = {
+  ...data,
+  featureList: resolvedFeatureList
+};
+
+// Get Dynamic Content
+const posts = (await getCollection('postsEN'))
+  .sort((a, b) => b.data.publishedDate.valueOf() - a.data.publishedDate.valueOf())
+  .slice(0, 3);
+
+const news = (await getCollection('newsEN'))
+  .sort((a, b) => b.data.publishedDate.valueOf() - a.data.publishedDate.valueOf())
+  .slice(0, 3);
+
+const events = (await getCollection('eventsEN'))
+  .filter(e => !e.data.isPast && e.data.date >= new Date())
+  .sort((a, b) => a.data.date.valueOf() - b.data.date.valueOf())
+  .slice(0, 3);
+
+// Transform for React components
+const mappedPosts = await Promise.all(posts.map(async p => ({
+  slug: p.slug,
+  title: p.data.title,
+  summary: p.data.summary,
+  date: p.data.publishedDate,
+  image: await getMediaImage(p.data.coverImage)
+})));
+
+const mappedNews = news.map(n => ({
+  slug: n.slug,
+  title: n.data.title,
+  date: n.data.publishedDate,
+  important: n.data.important
+}));
+
+const mappedEvents = await Promise.all(events.map(async e => {
+  const ast = Markdoc.parse(e.body);
+  const content = Markdoc.transform(ast, {
+    nodes: { image: imageNode }
+  });
+  const description = Markdoc.renderers.html(content);
+  
+  return {
+    slug: e.slug,
+    title: e.data.title,
+    date: e.data.date,
+    endTime: e.data.endTime,
+    location: e.data.location,
+    fee: e.data.fee,
+    image: await getMediaImage(e.data.coverImage),
+    description: description,
+    isPast: e.data.isPast
+  };
+}));
+---
+
+<Layout>
+  <main>
+    <Hero 
+      client:load 
+      data={data}
+      lang="en"
+    />
+
+    <NewsSection 
+      client:visible 
+      news={mappedNews}
+      lang="en"
+    />
+    
+    <Features 
+      client:visible
+      data={resolvedData}
+    />
+
+    <UpcomingEvents 
+      client:visible
+      title={data.eventsTitle || "Upcoming Events"}
+      subtitle={data.eventsSubtitle || "Join us"}
+      events={mappedEvents}
+      lang="en"
+    />
+
+    <BlogSection 
+      client:visible 
+      title={data.blogTitle || "Latest Stories"}
+      subtitle={data.blogSubtitle || "From our community"}
+      posts={mappedPosts}
+      lang="en"
+    />
+
+    <Stats 
+      client:visible 
+      data={data}
+    />
+  </main>
+</Layout>

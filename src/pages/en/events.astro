@@ -1,0 +1,76 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import EventGrid from '../../components/events/EventGrid';
+import { getCollection, getEntry } from 'astro:content';
+import type { CollectionEntry } from 'astro:content';
+import Markdoc from '@markdoc/markdoc';
+import { headingNode, tableTag, imageNode } from '../../utils/markdocConfig';
+import { getMediaImage } from '../../utils/media';
+
+export const prerender = true;
+
+const eventsPage = await getEntry('eventsPage', 'en');
+const allEventsRaw = await getCollection('eventsEN');
+
+// Map function for English
+const mapEvent = async (event: CollectionEntry<'eventsEN'>) => {
+  const ast = Markdoc.parse(event.body);
+  const content = Markdoc.transform(ast, {
+    nodes: { heading: headingNode, image: imageNode },
+    tags: { table: tableTag }
+  });
+  const html = Markdoc.renderers.html(content);
+  
+  return {
+    slug: event.slug, 
+    data: {
+      date: event.data.date,
+      endTime: event.data.endTime,
+      coverImage: await getMediaImage(event.data.coverImage),
+      title: event.data.title,
+      location: event.data.location,
+      fee: event.data.fee,
+      isPast: event.data.isPast,
+      description: html
+    }
+  };
+};
+
+const allEvents = await Promise.all(allEventsRaw.map(mapEvent));
+---
+
+<Layout title={`${eventsPage?.data.title || 'Events'} - KeyAstro`}>
+  <div class="bg-gray-50 dark:bg-gray-900 min-h-screen transition-colors duration-300">
+    
+    {/* Header */}
+    <div class="bg-white dark:bg-gray-950 border-b border-gray-200 dark:border-gray-800 pt-24 pb-16">
+      <div class="max-w-7xl mx-auto px-6 lg:px-8 text-center">
+        <h1 class="text-4xl font-extrabold text-gray-900 dark:text-white sm:text-6xl mb-4">{eventsPage?.data.title || 'Events & Activities'}</h1>
+        {eventsPage?.data.subtitle && (
+          <p class="text-xl text-gray-500 dark:text-gray-400 max-w-2xl mx-auto">
+            {eventsPage.data.subtitle}
+          </p>
+        )}
+      </div>
+    </div>
+
+    <div class="max-w-7xl mx-auto px-6 lg:px-8 py-16">
+      {eventsPage?.data.calendarUrl && (
+        <div class="mb-16">
+          <div class="w-full h-[400px] md:h-[600px] rounded-3xl overflow-hidden shadow-sm border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800">
+            <iframe 
+              src={eventsPage.data.calendarUrl} 
+              style="border: 0" 
+              width="100%" 
+              height="100%" 
+              frameborder="0" 
+              scrolling="no">
+            </iframe>
+          </div>
+        </div>
+      )}
+
+      <EventGrid client:visible events={allEvents} lang="en" />
+    </div>
+  </div>
+</Layout>

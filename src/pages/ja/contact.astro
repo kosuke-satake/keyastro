@@ -1,0 +1,78 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { getEntry } from 'astro:content';
+import { SocialIcon } from '../../components/ui/Icons';
+import { getMediaImage } from '../../utils/media';
+
+const entry = await getEntry('contact', 'ja');
+const global = await getEntry('global', 'ja');
+if (!entry) throw new Error('Contact page data not found');
+const t = entry.data;
+const socialLinksRaw = global?.data?.socialLinks || [];
+const socialLinks = await Promise.all(
+  socialLinksRaw.map(async (link) => ({
+    ...link,
+    customIcon: await getMediaImage(link.customIcon)
+  }))
+);
+---
+
+<Layout title={`${t.title} - KeyAstro`}>
+  <div class="bg-gray-50 dark:bg-gray-900 min-h-screen pt-40 pb-24 transition-colors duration-300">
+    <div class="max-w-7xl mx-auto px-6 lg:px-8">
+      
+      {/* Header */}
+      <div class="text-center mb-16">
+        <h1 class="text-4xl font-extrabold text-gray-900 dark:text-white sm:text-6xl mb-6">{t.title}</h1>
+        <p class="text-xl text-gray-500 dark:text-gray-400 max-w-2xl mx-auto">{t.subtitle}</p>
+      </div>
+
+      <div class="grid lg:grid-cols-2 gap-12 lg:gap-24 items-start">
+        
+        {/* Info Column */}
+        <div class="space-y-12 order-2 lg:order-1">
+          <div>
+            <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-4">{t.infoTitle}</h3>
+            <p class="text-gray-600 dark:text-gray-300 text-lg leading-relaxed">{t.infoText}</p>
+          </div>
+
+          <div class="space-y-4">
+             {socialLinks.map((link) => (
+                <a 
+                  href={link.url} 
+                  target="_blank" 
+                  rel="noopener noreferrer" 
+                  class="flex items-center gap-4 p-4 rounded-2xl bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 hover:border-primary hover:shadow-md transition-all group"
+                >
+                  <div class="w-12 h-12 rounded-full bg-gray-50 dark:bg-gray-700 flex items-center justify-center text-gray-600 dark:text-gray-300 group-hover:bg-primary group-hover:text-white transition-colors">
+                     {link.customIcon ? (
+                        <img src={link.customIcon} alt={link.platform} class="w-6 h-6 object-contain" />
+                      ) : (
+                        <SocialIcon name={link.icon} className="w-6 h-6" />
+                      )}
+                  </div>
+                  <div>
+                    <span class="block font-bold text-gray-900 dark:text-white">{link.platform}</span>
+                    <span class="text-sm text-gray-500 dark:text-gray-400 group-hover:text-primary transition-colors">Connect with us</span>
+                  </div>
+                </a>
+              ))}
+          </div>
+        </div>
+
+        {/* Form Column */}
+        <div class="order-1 lg:order-2 bg-white dark:bg-gray-800 rounded-3xl shadow-xl overflow-hidden border border-gray-100 dark:border-gray-700 h-[800px]">
+          <iframe 
+            src={t.googleFormUrl} 
+            width="100%" 
+            height="100%" 
+            class="w-full h-full border-0 m-0"
+          >
+            Loading…
+          </iframe>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</Layout>

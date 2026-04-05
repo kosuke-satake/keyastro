@@ -1,0 +1,113 @@
+---
+import { SocialIcon } from '../ui/Icons';
+
+interface Props {
+  url: string;
+  title: string;
+}
+
+const { url, title } = Astro.props;
+const encodedUrl = encodeURIComponent(url);
+const encodedTitle = encodeURIComponent(title);
+---
+
+<div class="flex flex-col gap-4 sticky top-24">
+  <p class="text-xs font-bold text-gray-400 uppercase tracking-wider text-center lg:text-left">Share</p>
+  <div class="flex flex-row lg:flex-col gap-3 justify-center lg:justify-start">
+    {/* Twitter / X */}
+    <a 
+      href={`https://twitter.com/intent/tweet?url=${encodedUrl}&text=${encodedTitle}`}
+      target="_blank"
+      rel="noopener noreferrer"
+      class="w-10 h-10 flex items-center justify-center rounded-full bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 hover:bg-black hover:text-white dark:hover:bg-white dark:hover:text-black transition-colors"
+      aria-label="Share on Twitter"
+    >
+      <SocialIcon name="twitter" className="w-4 h-4" />
+    </a>
+
+    {/* Facebook */}
+    <a 
+      href={`https://www.facebook.com/sharer/sharer.php?u=${encodedUrl}`}
+      target="_blank"
+      rel="noopener noreferrer"
+      class="w-10 h-10 flex items-center justify-center rounded-full bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 hover:bg-[#1877F2] hover:text-white transition-colors"
+      aria-label="Share on Facebook"
+    >
+      <SocialIcon name="facebook" className="w-5 h-5" />
+    </a>
+
+    {/* LinkedIn */}
+    <a 
+      href={`https://www.linkedin.com/sharing/share-offsite/?url=${encodedUrl}`}
+      target="_blank"
+      rel="noopener noreferrer"
+      class="w-10 h-10 flex items-center justify-center rounded-full bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 hover:bg-[#0A66C2] hover:text-white transition-colors"
+      aria-label="Share on LinkedIn"
+    >
+      <SocialIcon name="linkedin" className="w-4 h-4" />
+    </a>
+
+    {/* Copy Link */}
+    <button 
+      data-url={url}
+      class="copy-link-btn w-10 h-10 flex items-center justify-center rounded-full bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors group relative"
+      aria-label="Copy Link"
+    >
+      <div class="copy-icon">
+        <SocialIcon name="copy" className="w-5 h-5" />
+      </div>
+      <div class="check-icon hidden text-green-500">
+        <SocialIcon name="check" className="w-5 h-5" />
+      </div>
+      <span class="tooltip absolute left-1/2 -translate-x-1/2 bottom-full mb-2 px-2 py-1 text-xs text-white bg-black rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none">Copy Link</span>
+    </button>
+  </div>
+</div>
+
+<script>
+  function setupCopyButtons() {
+    const buttons = document.querySelectorAll('.copy-link-btn');
+    
+    buttons.forEach(btn => {
+      // Remove old listener to be safe (though cloning or fresh DOM avoids this usually)
+      const newBtn = btn.cloneNode(true) as HTMLElement;
+      btn.parentNode?.replaceChild(newBtn, btn);
+
+      newBtn.addEventListener('click', async () => {
+        const url = newBtn.getAttribute('data-url');
+        const copyIcon = newBtn.querySelector('.copy-icon');
+        const checkIcon = newBtn.querySelector('.check-icon');
+        const tooltip = newBtn.querySelector('.tooltip');
+
+        if (url) {
+          try {
+            await navigator.clipboard.writeText(url);
+            
+            copyIcon?.classList.add('hidden');
+            checkIcon?.classList.remove('hidden');
+            
+            if (tooltip) {
+              tooltip.textContent = 'Link Copied!';
+              tooltip.classList.remove('opacity-0');
+            }
+
+            setTimeout(() => {
+              copyIcon?.classList.remove('hidden');
+              checkIcon?.classList.add('hidden');
+              if (tooltip) {
+                tooltip.textContent = 'Copy Link';
+                tooltip.classList.add('opacity-0');
+              }
+            }, 2000);
+          } catch (err) {
+            console.error('Failed to copy: ', err);
+          }
+        }
+      });
+    });
+  }
+
+  // Run on load and nav
+  setupCopyButtons();
+  document.addEventListener('astro:after-swap', setupCopyButtons);
+</script>

@@ -1,0 +1,21 @@
+---
+export const prerender = true;
+---
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>KeyAstro | Astro + Keystatic Template</title>
+    <meta name="description" content="Astro + Keystatic Template. Connecting students globally through science and technology." />
+    <meta http-equiv="refresh" content="0;url=/en/" />
+    <script>
+      // Client-side language detection
+      const lang = navigator.language.startsWith('ja') ? 'ja' : 'en';
+      window.location.href = `/${lang}/`;
+    </script>
+    <link rel="canonical" href="https://keyastro.pages.dev/" />
+  </head>
+  <body>
+  </body>
+</html>

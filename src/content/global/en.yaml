@@ -1,0 +1,18 @@
+siteTitle: KeyAstro Template
+footerDescription: >-
+  A modern, highly performant static site template built with Astro, Tailwind, and Keystatic.
+footerLinksTitle: Template Pages
+footerConnectTitle: Resources
+footerRightsText: Open Source. MIT License.
+socialLinks:
+  - platform: GitHub
+    url: https://github.com
+    icon: github
+navHome: Home
+navAbout: About Architecture
+navLeaders: Authors
+navBlog: Documentation
+navEvents: Demo Events
+navJoin: Getting Started
+navContact: Demo Form
+navPrivacy: Demo Privacy

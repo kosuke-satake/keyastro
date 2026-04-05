@@ -1,0 +1,162 @@
+---
+import { getEntry } from 'astro:content';
+import { getLangFromUrl, getLink } from '../utils/i18n';
+import { getMediaImage } from '../utils/media';
+import ThemeToggle from './header/ThemeToggle';
+import MobileNav from './header/MobileNav';
+
+const { pathname } = Astro.url;
+const currentLang = getLangFromUrl(Astro.url);
+
+const globalEntry = await getEntry('global', currentLang);
+if (!globalEntry) {
+  throw new Error(`Global content not found for language: ${currentLang}`);
+}
+const t = globalEntry.data;
+
+const socialLinks = await Promise.all(
+  (t.socialLinks || []).map(async (link) => ({
+    ...link,
+    customIcon: await getMediaImage(link.customIcon)
+  }))
+);
+
+const homeLink = `/${currentLang}`;
+
+const links = [
+  { href: homeLink, label: t.navHome },
+  { href: getLink('/about', currentLang), label: t.navAbout },
+  { href: getLink('/leaders', currentLang), label: t.navLeaders },
+  { href: getLink('/blog', currentLang), label: t.navBlog },
+  { href: getLink('/events', currentLang), label: t.navEvents },
+  { href: getLink('/join', currentLang), label: t.navJoin },
+  { href: getLink('/contact', currentLang), label: t.navContact || 'Contact' },
+];
+
+// Helper for switching languages while keeping the current page
+const getSwitchLink = (targetLang: string) => {
+  const segments = pathname.split('/').filter(Boolean);
+  if (segments[0] === 'en' || segments[0] === 'ja') {
+    segments[0] = targetLang;
+  } else {
+    segments.unshift(targetLang);
+  }
+  return `/${segments.join('/')}`;
+};
+
+const switchLinkEn = getSwitchLink('en');
+const switchLinkJa = getSwitchLink('ja');
+
+// Robust home check: simply check if the path is exactly the language root
+// Remove trailing slash for comparison consistency
+const cleanPath = pathname.replace(/\/$/, '');
+const isHome = cleanPath === `/${currentLang}`;
+---
+
+<header 
+  id="main-header"
+  data-is-home={isHome ? 'true' : 'false'}
+  class={`fixed top-0 z-[100] w-full transition-all duration-500 ${isHome ? 'opacity-0 pointer-events-none' : 'backdrop-blur-lg bg-white/80 dark:bg-gray-900/80 border-b border-gray-200 dark:border-gray-800 opacity-100 pointer-events-auto'}`}
+>
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="flex justify-between items-center h-16">
+      <!-- Logo -->
+      <div class="flex-shrink-0 flex items-center">
+        <a href={homeLink} class="flex items-center transition-colors">
+          <img src="/icon/logo.svg" alt="KeyAstro" class="h-8 w-auto" />
+        </a>
+      </div>
+
+      <!-- Desktop Nav -->
+      <nav class="hidden md:flex items-center space-x-8">
+        {links.map((link) => (
+          <a
+            href={link.href}
+            class={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${link.href === pathname || link.href === cleanPath ? 'text-primary font-bold' : (isHome ? 'text-gray-700 dark:text-gray-300 hover:text-primary header-link-alt' : 'text-gray-700 dark:text-gray-300 hover:text-primary')}`}
+          >
+            {link.label}
+          </a>
+        ))}
+        
+        <div class="flex items-center space-x-4 border-l border-gray-300 dark:border-gray-700 pl-6 ml-2">
+           {/* Language Switcher */}
+          <div class="flex items-center space-x-2 text-sm font-medium">
+            <a 
+              href={switchLinkEn} 
+              class={`transition-colors ${currentLang === 'en' ? 'text-primary font-bold' : 'text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200'}`}
+            >
+              EN
+            </a>
+            <span class="text-gray-300 dark:text-gray-600">|</span>
+            <a 
+              href={switchLinkJa} 
+              class={`transition-colors ${currentLang === 'ja' ? 'text-primary font-bold' : 'text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200'}`}
+            >
+              JP
+            </a>
+          </div>
+
+          {/* Theme Settings Dropdown */}
+          <ThemeToggle client:load />
+        </div>
+      </nav>
+
+      {/* Mobile Nav */}
+      <MobileNav 
+        client:load 
+        links={links} 
+        currentLang={currentLang} 
+        switchLinkEn={switchLinkEn} 
+        switchLinkJa={switchLinkJa} 
+        social={socialLinks}
+      />
+    </div>
+  </div>
+</header>
+
+<script is:inline>
+  function setupHeader() {
+    const header = document.getElementById('main-header');
+    if (!header) return;
+
+    const isHome = header.getAttribute('data-is-home') === 'true';
+
+    // Remove any existing listener to prevent duplicates
+    if (window._headerScrollHandler) {
+      window.removeEventListener('scroll', window._headerScrollHandler);
+      window._headerScrollHandler = null;
+    }
+
+    // If NOT home, ensure header is visible and exit
+    if (!isHome) {
+      header.classList.remove('opacity-0', 'pointer-events-none');
+      header.classList.add('opacity-100', 'pointer-events-auto', 'backdrop-blur-lg', 'bg-white/80', 'dark:bg-gray-900/80', 'border-b', 'border-gray-200', 'dark:border-gray-800');
+      return;
+    }
+
+    // Home Page Logic
+    const updateHeader = () => {
+      // Use a smaller threshold to ensure it feels responsive
+      if (window.scrollY > 50) {
+        // Scrolled state (Show Header)
+        header.classList.remove('opacity-0', 'pointer-events-none');
+        header.classList.add('opacity-100', 'pointer-events-auto', 'backdrop-blur-lg', 'bg-white/80', 'dark:bg-gray-900/80', 'border-b', 'border-gray-200', 'dark:border-gray-800');
+      } else {
+        // Top state (Hide Header - Screensaver mode)
+        header.classList.add('opacity-0', 'pointer-events-none');
+        header.classList.remove('opacity-100', 'pointer-events-auto', 'backdrop-blur-lg', 'bg-white/80', 'dark:bg-gray-900/80', 'border-b', 'border-gray-200', 'dark:border-gray-800');
+      }
+    };
+
+    window._headerScrollHandler = updateHeader;
+    window.addEventListener('scroll', updateHeader);
+    updateHeader(); // Init state
+  }
+
+  // Initialize on load
+  setupHeader();
+  
+  // Re-initialize on navigation
+  document.addEventListener('astro:after-swap', setupHeader);
+</script>
+

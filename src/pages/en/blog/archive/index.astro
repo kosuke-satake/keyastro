@@ -1,0 +1,40 @@
+---
+import Layout from '../../../../layouts/Layout.astro';
+import Breadcrumbs from '../../../../components/ui/Breadcrumbs.astro';
+import { getCollection } from 'astro:content';
+
+const allPosts = await getCollection('postsEN');
+const archiveCounts: Record<number, number> = {};
+allPosts.forEach(p => {
+  const y = p.data.publishedDate.getFullYear();
+  archiveCounts[y] = (archiveCounts[y]||0) + 1;
+});
+const archive = Object.entries(archiveCounts).map(([year, count]) => ({ year: parseInt(year), count })).sort((a,b) => b.year - a.year);
+---
+
+<Layout title="Archive - KeyAstro Blog">
+  <div class="bg-gray-50 dark:bg-gray-900 min-h-screen transition-colors duration-300">
+    <div class="bg-white dark:bg-gray-950 border-b border-gray-200 dark:border-gray-800 pt-24 pb-16">
+      <div class="max-w-7xl mx-auto px-6 lg:px-8 text-center">
+        <h1 class="text-4xl font-extrabold text-gray-900 dark:text-white sm:text-6xl mb-4">Archive</h1>
+      </div>
+    </div>
+
+    <div class="max-w-7xl mx-auto px-6 lg:px-8 py-12">
+      <Breadcrumbs />
+      <div class="flex flex-col items-center gap-4">
+        {archive.length > 0 ? archive.map((item) => (
+          <a 
+            href={`/en/blog/archive/${item.year}`} 
+            class="w-full max-w-md p-6 bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700 hover:border-primary hover:shadow-md transition-all flex items-center justify-between text-xl font-medium text-gray-700 dark:text-gray-300 group"
+          >
+            <span class="group-hover:translate-x-2 transition-transform">{item.year}</span>
+            <span class="bg-gray-100 dark:bg-gray-700 text-sm px-3 py-1 rounded-full text-gray-500 dark:text-gray-400">{item.count} Posts</span>
+          </a>
+        )) : (
+          <p class="text-gray-500">No archive found.</p>
+        )}
+      </div>
+    </div>
+  </div>
+</Layout>

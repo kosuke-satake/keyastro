@@ -1,0 +1,154 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { getEntry } from 'astro:content';
+import { AdvancedReveal } from '../../components/ui/AdvancedReveal';
+import AuroraBackground from '../../components/ui/AuroraBackground';
+import Gallery from '../../components/sections/Gallery';
+import { getMediaImage } from '../../utils/media';
+
+export const prerender = true;
+
+const entry = await getEntry('about', 'en');
+if (!entry) throw new Error('About page data not found');
+const t = entry.data;
+
+const galleryImages = await Promise.all((t.galleryImages || []).map(img => getMediaImage(img)));
+const validGalleryImages = galleryImages.filter((img): img is string => !!img);
+---
+
+<Layout title={t.title}>
+  {/* Hero Section */}
+  <div class="relative bg-gray-900 text-white pt-40 pb-32 overflow-hidden">
+    <AuroraBackground client:load />
+    <div class="absolute inset-0 bg-black/30 z-10"></div>
+    
+    <div class="relative z-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+      <AdvancedReveal width="100%" type="zoom-in" duration={0.8} client:load>
+        <h1 class="text-5xl md:text-7xl font-extrabold tracking-tight mb-6 drop-shadow-2xl bg-clip-text text-transparent bg-gradient-to-r from-white to-gray-300">
+          {t.title}
+        </h1>
+        <p class="mt-6 text-2xl text-gray-200 max-w-3xl mx-auto font-light leading-relaxed">
+          {t.subtitle}
+        </p>
+      </AdvancedReveal>
+    </div>
+  </div>
+
+  <div class="bg-white dark:bg-gray-950 transition-colors duration-300">
+    
+    {/* Story Section - Centered, No Image/Animation */}
+    <section class="max-w-4xl mx-auto px-6 lg:px-8 py-32">
+      <AdvancedReveal width="100%" type="fade-up" client:visible>
+        <div class="text-center">
+          <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 text-xs font-bold uppercase tracking-wider mb-8">
+            <span class="w-2 h-2 rounded-full bg-blue-500 animate-pulse"></span>
+            Established 2018
+          </div>
+          
+          <h2 class="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-12">
+            {t.section1Title}
+          </h2>
+          
+          <div class="prose prose-xl dark:prose-invert text-gray-600 dark:text-gray-300 leading-relaxed mx-auto">
+            <p class="whitespace-pre-line">{t.section1Content}</p>
+          </div>
+        </div>
+      </AdvancedReveal>
+    </section>
+
+    {/* Mission Section (Bento Grid) */}
+    <section class="bg-gray-50 dark:bg-gray-900 py-32">
+      <div class="max-w-7xl mx-auto px-6 lg:px-8">
+        <AdvancedReveal width="100%" type="zoom-in" client:visible>
+          <h2 class="text-4xl font-bold text-center text-gray-900 dark:text-white mb-16">{t.section2Title}</h2>
+        </AdvancedReveal>
+
+        <div class="grid md:grid-cols-2 gap-8">
+          <AdvancedReveal width="100%" delay={0.1} type="slide-right" client:visible>
+            <div class="h-full bg-white dark:bg-gray-800 p-6 md:p-12 rounded-3xl shadow-lg border border-gray-100 dark:border-gray-700 hover:border-blue-500/50 hover:shadow-blue-500/10 transition-all duration-300 group relative overflow-hidden">
+              <div class="absolute top-0 right-0 w-64 h-64 bg-blue-500/5 rounded-full blur-3xl group-hover:bg-blue-500/10 transition-colors"></div>
+              <div class="relative z-10">
+                <div class="w-16 h-16 bg-blue-100 dark:bg-blue-900/30 rounded-2xl flex items-center justify-center text-3xl mb-8 text-blue-600 dark:text-blue-400 shadow-sm">
+                  🌏
+                </div>
+                <h3 class="text-3xl font-bold text-gray-900 dark:text-white mb-6">{t.mission1Title}</h3>
+                <p class="text-gray-600 dark:text-gray-300 leading-relaxed text-lg">
+                  {t.mission1Desc}
+                </p>
+              </div>
+            </div>
+          </AdvancedReveal>
+
+          <AdvancedReveal width="100%" delay={0.2} type="slide-left" client:visible>
+            <div class="h-full bg-white dark:bg-gray-800 p-6 md:p-12 rounded-3xl shadow-lg border border-gray-100 dark:border-gray-700 hover:border-purple-500/50 hover:shadow-purple-500/10 transition-all duration-300 group relative overflow-hidden">
+              <div class="absolute top-0 right-0 w-64 h-64 bg-purple-500/5 rounded-full blur-3xl group-hover:bg-purple-500/10 transition-colors"></div>
+              <div class="relative z-10">
+                <div class="w-16 h-16 bg-purple-100 dark:bg-purple-900/30 rounded-2xl flex items-center justify-center text-3xl mb-8 text-purple-600 dark:text-purple-400 shadow-sm">
+                  🤝
+                </div>
+                <h3 class="text-3xl font-bold text-gray-900 dark:text-white mb-6">{t.mission2Title}</h3>
+                <p class="text-gray-600 dark:text-gray-300 leading-relaxed text-lg">
+                  {t.mission2Desc}
+                </p>
+              </div>
+            </div>
+          </AdvancedReveal>
+        </div>
+      </div>
+    </section>
+
+    {/* Activities Section */}
+    <section class="max-w-7xl mx-auto px-6 lg:px-8 py-32">
+      <AdvancedReveal width="100%" type="fade-up" client:visible>
+        <div class="bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-gray-900 dark:to-gray-800 rounded-3xl p-12 md:p-24 text-gray-900 dark:text-white relative overflow-hidden shadow-2xl border border-gray-100 dark:border-gray-700 transition-colors duration-300">
+          {/* Decor */}
+          <div class="absolute top-0 left-0 w-full h-full bg-[url('/images/pattern.svg')] opacity-30 dark:opacity-10 transition-opacity"></div>
+          <div class="absolute bottom-0 right-0 w-96 h-96 bg-primary rounded-full blur-[150px] opacity-20"></div>
+
+          <div class="relative z-10 grid lg:grid-cols-2 gap-20 items-center">
+            <div>
+              <h2 class="text-4xl md:text-5xl font-bold mb-10">{t.section3Title}</h2>
+              <div class="space-y-8">
+                {t.activities.map((activity) => (
+                  <div class="flex items-start gap-6 p-6 rounded-2xl hover:bg-white/60 dark:hover:bg-white/5 transition-colors border border-transparent hover:border-blue-200 dark:hover:border-white/10">
+                    <div class="flex-shrink-0 w-10 h-10 rounded-full bg-green-500 flex items-center justify-center text-black font-bold shadow-lg shadow-green-500/20">
+                      ✓
+                    </div>
+                    <span class="text-xl text-gray-700 dark:text-gray-200 font-light">{activity}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+            
+            {/* 3D-ish Floating Icons */}
+            <div class="flex items-center justify-center perspective-1000">
+               <div class="grid grid-cols-2 gap-6 transform rotate-y-12 rotate-x-6">
+                  <div class="w-40 h-40 bg-white/60 dark:bg-white/10 backdrop-blur-md rounded-3xl flex items-center justify-center text-5xl shadow-2xl border border-white/40 dark:border-white/10 animate-float-slow transition-colors">💬</div>
+                  <div class="w-40 h-40 bg-white/60 dark:bg-white/10 backdrop-blur-md rounded-3xl flex items-center justify-center text-5xl shadow-2xl border border-white/40 dark:border-white/10 mt-12 animate-float-medium transition-colors">🔬</div>
+                  <div class="w-40 h-40 bg-white/60 dark:bg-white/10 backdrop-blur-md rounded-3xl flex items-center justify-center text-5xl shadow-2xl border border-white/40 dark:border-white/10 -mt-12 animate-float-fast transition-colors">🎉</div>
+                  <div class="w-40 h-40 bg-white/60 dark:bg-white/10 backdrop-blur-md rounded-3xl flex items-center justify-center text-5xl shadow-2xl border border-white/40 dark:border-white/10 animate-float-slow transition-colors">🏕️</div>
+               </div>
+            </div>
+          </div>
+        </div>
+      </AdvancedReveal>
+    </section>
+
+    {/* Gallery Section */}
+    <Gallery title={t.galleryTitle || "Gallery"} images={validGalleryImages} client:visible />
+
+  </div>
+</Layout>
+
+<style>
+  .perspective-1000 {
+    perspective: 1000px;
+  }
+  @keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-20px); }
+  }
+  .animate-float-slow { animation: float 6s ease-in-out infinite; }
+  .animate-float-medium { animation: float 5s ease-in-out infinite; }
+  .animate-float-fast { animation: float 4s ease-in-out infinite; }
+</style>

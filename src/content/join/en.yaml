@@ -1,0 +1,43 @@
+title: Get Started
+subtitle: How to deploy and use this template.
+membershipTitle: Quick Setup
+membershipBadge: Open Source
+membershipContent: >-
+  Clone the repository, install dependencies with npm, and run the development server to start building your site immediately.
+membershipButtonLink: https://github.com
+joinSteps:
+  - title: Clone Repo
+    desc: Download the code to your local machine.
+    icon: 💻
+  - title: Run Keystatic
+    desc: >-
+      Access the local CMS to edit the demo content.
+    icon: ⚙️
+  - title: Deploy
+    desc: Push to GitHub and deploy seamlessly to Cloudflare Pages.
+    icon: 🚀
+followTitle: Documentation
+visualTagline: Built for speed and flexibility.
+leaderTitle: Customization
+leaderBadge: Developer Guide
+leaderContent: >-
+  This template is designed to be easily modifiable. You can edit the Tailwind configuration, swap out Astro components, and define new Keystatic collections in the config file.
+requirementsTitle: Prerequisites
+requirementsList:
+  - Node.js installed on your machine.
+  - A GitHub account for deployment.
+applyButtonText: View Source Code
+applyButtonLink: https://github.com
+applyButtonNote: Licensed under MIT.
+faqTitle: FAQ
+faqSubtitle: Common questions about KeyAstro.
+faqList:
+  - question: Is it completely free?
+    answer: >-
+      Yes! Both Astro and Keystatic are open-source and free to use. Cloudflare Pages also offers a generous free tier for hosting.
+  - question: How do I change the theme?
+    answer: >-
+      You can modify the primary colors and font settings in the tailwind.config.js file and global CSS.
+  - question: Can I add a new language?
+    answer: >-
+      Yes. The i18n utility is designed to be easily extensible. You just need to add a new locale to the config and duplicate the content folders.

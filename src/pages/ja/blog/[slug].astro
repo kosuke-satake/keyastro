@@ -1,0 +1,236 @@
+---
+import Layout from '../../../layouts/Layout.astro';
+import ShareButtons from '../../../components/blog/ShareButtons.astro';
+import Breadcrumbs from '../../../components/ui/Breadcrumbs.astro';
+import { getCollection } from 'astro:content';
+import { getReadingTimeJa } from '../../../utils/readingTime';
+import ReadingProgress from '../../../components/ui/ReadingProgress';
+import BlogSection from '../../../components/sections/BlogSection';
+import TableOfContents from '../../../components/blog/TableOfContents';
+import { extractHeadings } from '../../../utils/toc';
+import { getMediaImage } from '../../../utils/media';
+
+export const prerender = true;
+
+export async function getStaticPaths() {
+  const posts = await getCollection('postsJA');
+  return posts.map(post => ({
+    params: { slug: post.slug },
+    props: { post },
+  }));
+}
+
+const { post } = Astro.props;
+const title = post.data.title;
+const url = Astro.url.href;
+
+// Resolve Main Image
+const coverImageSrc = await getMediaImage(post.data.coverImage);
+
+// Render Content
+const { Content } = await post.render();
+const headings = extractHeadings(post.body);
+
+// Reading Time
+const charCount = post.body.replace(/\s+/g, '').length;
+const readingTime = `${Math.ceil(charCount / 400)} 分で読めます`;
+
+// Get Next/Prev
+const allPosts = (await getCollection('postsJA')).sort(
+	(a, b) => b.data.publishedDate.valueOf() - a.data.publishedDate.valueOf()
+);
+const currentIndex = allPosts.findIndex(p => p.slug === post.slug);
+const nextPost = allPosts[currentIndex - 1]; // Newer
+const prevPost = allPosts[currentIndex + 1]; // Older
+
+// Related Posts Logic
+const relatedPostsRaw = allPosts
+  .filter(p => p.slug !== post.slug)
+  .map(p => {
+    const sharedTags = p.data.tags?.filter(tag => post.data.tags?.includes(tag)) || [];
+    return {
+      ...p,
+      score: sharedTags.length
+    };
+  })
+  .filter(p => p.score > 0)
+  .sort((a, b) => b.score - a.score || b.data.publishedDate.valueOf() - a.data.publishedDate.valueOf())
+  .slice(0, 3);
+
+const relatedPosts = await Promise.all(relatedPostsRaw.map(async p => ({
+    slug: p.slug,
+    title: p.data.title,
+    date: p.data.publishedDate,
+    image: await getMediaImage(p.data.coverImage),
+    summary: p.data.summary
+})));
+
+// Get Leader for Author Link
+const leaders = await getCollection('leadersJA');
+const authorProfile = leaders.find(l => l.data.name === post.data.author);
+const authorAvatarSrc = authorProfile ? await getMediaImage(authorProfile.data.avatar, 'mediaLeaders') : undefined;
+---
+
+<Layout 
+  title={title} 
+  description={post.data.summary} 
+  image={coverImageSrc || undefined}
+  type="article"
+  articleDate={post.data.publishedDate}
+>
+  <ReadingProgress client:load />
+
+  <article class="min-h-screen bg-white dark:bg-gray-900 transition-colors duration-300">
+    
+    {/* Hero Header */}
+    <div class="relative w-full bg-gray-900 overflow-hidden">
+      <div class="absolute inset-0">
+        {coverImageSrc ? (
+           <img
+            src={coverImageSrc}
+            alt={title}
+            class="w-full h-full object-cover opacity-40 blur-sm scale-105"
+          />
+        ) : (
+          <div class="absolute inset-0 bg-gradient-to-br from-gray-900 via-primary/20 to-gray-900"></div>
+        )}
+        <div class="absolute inset-0 bg-gradient-to-b from-transparent via-gray-900/50 to-gray-900/90 dark:to-gray-900"></div>
+      </div>
+
+      <div class="relative max-w-4xl mx-auto px-6 pt-32 pb-12 text-center">
+        <div class="mb-6 flex flex-wrap justify-center gap-2">
+            {post.data.tags?.map(tag => (
+               <a href={`/ja/blog/category/${tag}`} class="px-3 py-1 bg-white/10 backdrop-blur-md border border-white/20 text-white text-xs font-bold rounded-full hover:bg-white/20 transition-colors uppercase tracking-wider">
+                 {tag}
+               </a>
+             ))}
+        </div>
+        
+        <h1 class="text-4xl md:text-6xl font-extrabold text-white mb-8 leading-tight drop-shadow-2xl">{title}</h1>
+        
+        <div class="flex flex-wrap items-center justify-center gap-6 text-gray-300 text-sm font-medium">
+             <div class="flex items-center gap-2">
+              <span class="p-1 rounded-full bg-white/10">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+              </span>
+              {post.data.publishedDate.toLocaleDateString('ja-JP', { dateStyle: 'long' })}
+            </div>
+
+            <div class="flex items-center gap-2">
+              <span class="p-1 rounded-full bg-white/10">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+              </span>
+              {readingTime}
+            </div>
+
+             {post.data.author && (
+               <div class="flex items-center gap-2">
+                <span class="p-1 rounded-full bg-white/10">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
+                </span>
+                {post.data.author}
+              </div>
+             )}
+        </div>
+      </div>
+    </div>
+
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+      <Breadcrumbs />
+      <div class="grid lg:grid-cols-12 gap-12">
+        
+        {/* Left Sidebar: Share */}
+        <div class="hidden lg:block lg:col-span-2">
+          <ShareButtons url={url} title={title} />
+        </div>
+
+        {/* Main Content */}
+        <div class="lg:col-span-8">
+          <div class="prose prose-lg prose-blue dark:prose-invert mx-auto
+            prose-headings:font-bold prose-headings:text-gray-900 dark:prose-headings:text-white prose-headings:tracking-tight
+            prose-p:text-gray-700 dark:prose-p:text-gray-300 prose-p:leading-relaxed
+            prose-a:text-primary hover:prose-a:text-primary-hover prose-a:no-underline hover:prose-a:underline
+            prose-img:rounded-2xl prose-img:shadow-xl prose-img:my-12
+            prose-blockquote:border-l-4 prose-blockquote:border-primary prose-blockquote:bg-gray-50 dark:prose-blockquote:bg-gray-800/50 prose-blockquote:py-4 prose-blockquote:px-6 prose-blockquote:rounded-r-lg prose-blockquote:not-italic
+            prose-li:marker:text-primary">
+            <Content />
+          </div>
+
+          {/* Author Bio (Simple) */}
+          {post.data.author && (
+            <div class="mt-16 p-8 bg-gray-50 dark:bg-gray-800 rounded-2xl flex items-center gap-6 border border-gray-100 dark:border-gray-700">
+              {authorProfile ? (
+                 <a href={`/ja/leaders`} class="shrink-0 group">
+                   <div class="w-16 h-16 rounded-full overflow-hidden border-2 border-transparent group-hover:border-primary transition-colors">
+                     {authorAvatarSrc ? (
+                       <img src={authorAvatarSrc} alt={post.data.author} class="w-full h-full object-cover !m-0 !shadow-none" />
+                     ) : (
+                       <div class="w-full h-full bg-primary/10 flex items-center justify-center text-primary text-2xl font-bold">
+                         {post.data.author.charAt(0)}
+                       </div>
+                     )}
+                   </div>
+                 </a>
+              ) : (
+                <div class="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center text-primary text-2xl font-bold">
+                  {post.data.author.charAt(0)}
+                </div>
+              )}
+              
+              <div>
+                <p class="text-sm text-gray-500 dark:text-gray-400 uppercase tracking-wider font-bold mb-1">著者</p>
+                {authorProfile ? (
+                  <a href={`/ja/leaders`} class="text-xl font-bold text-gray-900 dark:text-white hover:text-primary transition-colors">
+                    {post.data.author}
+                  </a>
+                ) : (
+                  <h3 class="text-xl font-bold text-gray-900 dark:text-white">{post.data.author}</h3>
+                )}
+              </div>
+            </div>
+          )}
+
+          <hr class="my-12 border-gray-200 dark:border-gray-800" />
+
+          {/* Navigation */}
+          <div class="flex flex-col sm:flex-row justify-between gap-6">
+            {prevPost ? (
+              <a href={`/ja/blog/${prevPost.slug}`} class="flex-1 group p-6 rounded-2xl border border-gray-200 dark:border-gray-700 hover:border-primary/50 transition-all bg-gray-50 dark:bg-gray-800/50">
+                <span class="block text-xs text-gray-500 dark:text-gray-400 mb-1">← 前の記事</span>
+                <span class="block text-lg font-bold text-gray-900 dark:text-white group-hover:text-primary transition-colors line-clamp-2">{prevPost.data.title}</span>
+              </a>
+            ) : <div class="flex-1"></div>}
+            
+            {nextPost ? (
+              <a href={`/ja/blog/${nextPost.slug}`} class="flex-1 group p-6 rounded-2xl border border-gray-200 dark:border-gray-700 hover:border-primary/50 transition-all bg-gray-50 dark:bg-gray-800/50 text-right">
+                <span class="block text-xs text-gray-500 dark:text-gray-400 mb-1">次の記事 →</span>
+                <span class="block text-lg font-bold text-gray-900 dark:text-white group-hover:text-primary transition-colors line-clamp-2">{nextPost.data.title}</span>
+              </a>
+            ) : <div class="flex-1"></div>}
+          </div>
+       </div>
+
+        {/* Right Sidebar: Mobile Share + TOC */}
+        <div class="lg:col-span-2 space-y-8">
+           <div class="lg:hidden">
+             <ShareButtons url={url} title={title} />
+           </div>
+           <TableOfContents headings={headings} lang="ja" client:idle />
+        </div>
+
+      </div>
+    </div>
+
+    {relatedPosts.length > 0 && (
+      <div class="border-t border-gray-200 dark:border-gray-800">
+        <BlogSection 
+          posts={relatedPosts} 
+          title="おすすめの記事" 
+          subtitle="関連するストーリー"
+          lang="ja"
+          client:visible
+        />
+      </div>
+    )}
+  </article>
+</Layout>
