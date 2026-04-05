@@ -6,7 +6,7 @@ footerConnectTitle: リソース
 footerRightsText: Open Source. MIT License.
 socialLinks:
   - platform: GitHub
-    url: https://github.com
+    url: https://github.com/kosuke-satake/keyastro
     icon: github
 navHome: ホーム
 navAbout: アーキテクチャ

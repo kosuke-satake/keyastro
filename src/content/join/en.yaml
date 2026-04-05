@@ -27,7 +27,7 @@ requirementsList:
   - Node.js installed on your machine.
   - A GitHub account for deployment.
 applyButtonText: View Source Code
-applyButtonLink: https://github.com
+applyButtonLink: https://github.com/kosuke-satake/keyastro
 applyButtonNote: Licensed under MIT.
 faqTitle: FAQ
 faqSubtitle: Common questions about KeyAstro.

@@ -4,7 +4,7 @@ membershipTitle: クイックセットアップ
 membershipBadge: オープンソース
 membershipContent: >-
   リポジトリをクローンし，npmで依存関係をインストールし，開発サーバーを起動して，すぐにサイト構築を始めましょう．
-membershipButtonLink: https://github.com
+membershipButtonLink: https://github.com/kosuke-satake/keyastro
 joinSteps:
   - title: リポジトリのクローン
     desc: コードをローカルマシンにダウンロードします．
@@ -27,6 +27,7 @@ requirementsList:
   - Node.jsがインストールされていること．
   - デプロイ用のGitHubアカウント．
 applyButtonText: ソースコードを見る
+applyButtonLink: https://github.com/kosuke-satake/keyastro
 applyButtonNote: MITライセンスで提供されています．
 faqTitle: よくある質問
 faqSubtitle: KeyAstroに関するよくある質問
