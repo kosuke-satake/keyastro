@@ -83,7 +83,7 @@ export default function UpcomingEvents({ events, title = "Upcoming Events", subt
                       {(() => {
                         const start = new Date(event.date);
                         const end = event.endTime ? new Date(event.endTime) : null;
-                        const opts: Intl.DateTimeFormatOptions = { month: 'short', day: 'numeric', timeZone: 'UTC' };
+                        const opts: Intl.DateTimeFormatOptions = { month: 'short', day: 'numeric' };
                         const startStr = start.toLocaleDateString(lang === 'ja' ? 'ja-JP' : undefined, opts);
                         
                         if (end) {
